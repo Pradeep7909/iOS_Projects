@@ -36,6 +36,33 @@ These application consists of:
 * [GoogleSignIn](https://github.com/google/GoogleSignIn) :- For Integrating Google Sign-in 
 * [FBSDKLoginKit](https://github.com/facebook/facebook-ios-sdk) :- For Facebook Integration 
 * [SDWebImage](https://github.com/SDWebImage/SDWebImage) :- For Displaying Network Image 
+
+```
+platform :ios, '13.0'
+
+target 'Arfof Demo' do
+  use_frameworks!
+  
+  # Pods for Arfof Demo
+  pod 'Hero'
+  pod 'DGCharts'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Messaging'
+  pod 'Firebase/RemoteConfig'
+  pod 'Firebase/Database'
+  pod 'Firebase/Storage'
+  pod 'Firebase/Crashlytics'
+  pod 'FirebaseInAppMessaging', '~> 10.19.0-beta'
+  pod 'Firebase/Firestore'
+  pod 'GoogleSignIn'
+  pod 'FBSDKCoreKit'
+  pod 'FBSDKLoginKit'
+  pod 'FBSDKShareKit'
+  pod 'SDWebImage'
+  
+end
+
+```
   
 ## ScreenShots
 
