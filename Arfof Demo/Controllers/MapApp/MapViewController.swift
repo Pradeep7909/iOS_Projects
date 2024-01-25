@@ -109,7 +109,7 @@ class MapViewController: UIViewController {
         mapView.delegate = self
         mapView.showsScale = true
         mapView.isRotateEnabled = true
-        mapView.mapType = .hybrid
+        mapView.mapType = .standard
         mapView.isUserInteractionEnabled = true
         // Make a new compass
         mapView.showsCompass = false
@@ -125,9 +125,9 @@ class MapViewController: UIViewController {
             mapView.selectableMapFeatures = [.pointsOfInterest]
         } else {
             //mapView.pointOfInterestFilter = .includingAll
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-            mapView.addGestureRecognizer(tapGesture)
         }
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        mapView.addGestureRecognizer(tapGesture)
         
         //mapytype control
         mapTypeSegmentedControl.addTarget(self, action: #selector(mapTypeSegmentedControlValueChanged), for: .valueChanged)
@@ -305,7 +305,7 @@ class MapViewController: UIViewController {
             if let locationName = locationName {
                 print("Tapped on location: \(locationName)")
                 self.destinationName = locationName
-                self.mapView.removeAnnotations(self.mapView.annotations)
+                //self.mapView.removeAnnotations(self.mapView.annotations)
                 self.createAnnotationPin(coordinate: coordinate, locationName: locationName)
                 
             }
