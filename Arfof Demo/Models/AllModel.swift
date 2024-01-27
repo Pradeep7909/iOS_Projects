@@ -68,3 +68,9 @@ struct UserChatData{
     var unreadMessageCount: Int = 0
     var isOnline : Bool
 }
+
+
+struct ClusterAnnotationData{
+    let locationName: String
+    let subtitle: String
+}

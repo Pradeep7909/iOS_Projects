@@ -20,10 +20,9 @@ class MapViewController: UIViewController {
     var lastDrawnTimer: Timer?
     var previousUserLocation : CLLocationCoordinate2D?
     var destinationName: String = ""
+    var clusterAnnotationData : [ClusterAnnotationData] = []
     let minSpan = MKCoordinateSpan(latitudeDelta: 0.001, longitudeDelta: 0.001)
     let maxSpan = MKCoordinateSpan(latitudeDelta: 100.0, longitudeDelta: 100.0)
-    
-    
     
     
     @IBOutlet var mapView: MKMapView!
@@ -35,11 +34,18 @@ class MapViewController: UIViewController {
     @IBOutlet weak var mapTypeSegmentedControl: UISegmentedControl!
     @IBOutlet weak var cancelOverlayView: UIView!
     @IBOutlet weak var noDataLabel: UILabel!
+    @IBOutlet weak var backgroundLocationDetailView: UIView!
+    @IBOutlet weak var backgroundTotalLocationsLabel: UILabel!
+    @IBOutlet weak var backgroundLocationTableView: UITableView!
+    @IBOutlet weak var backgroundSingleLocationView: UIView!
+    @IBOutlet weak var backgroundLocationName: UILabel!
+    @IBOutlet weak var backgroundLocationSubtitle: UILabel!
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpMap()
-        
     }
     
     //MARK: IBOutlet Actions
@@ -83,15 +89,20 @@ class MapViewController: UIViewController {
         removeAllOverlays{}
     }
     
+    @IBAction func cancelBackgroudDetailView(_ sender: Any) {
+        closeBackgroungLocationView()
+    }
+    
+    
     @IBAction func zoomInButton(_ sender: Any) {
         zoomMap(byFactor: 0.5)
     }
     
-    
-    
     @IBAction func zoomOutButtonAction(_ sender: Any) {
         zoomMap(byFactor: 2)
     }
+    
+    
     
     
     //MARK: Functions
@@ -99,10 +110,9 @@ class MapViewController: UIViewController {
 //        showUserLocation()
         
         setCustomAnnotation()
-        
-        
         hideKeyboardOnTap(view: mapView)
         hideKeyboardOnTap(view: backSearchView)
+        closeBackgroungLocationView()
         directionButtonView.isHidden = true
         cancelOverlayView.isHidden = true
         
@@ -111,7 +121,6 @@ class MapViewController: UIViewController {
         mapView.isRotateEnabled = true
         mapView.mapType = .standard
         mapView.isUserInteractionEnabled = true
-        // Make a new compass
         mapView.showsCompass = false
         let compassButton = MKCompassButton(mapView: mapView)
         compassButton.compassVisibility = .visible
@@ -126,17 +135,19 @@ class MapViewController: UIViewController {
         } else {
             //mapView.pointOfInterestFilter = .includingAll
         }
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-        mapView.addGestureRecognizer(tapGesture)
+        //commenet for now it is used for selecting a place by tapping on map..
+//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+//        mapView.addGestureRecognizer(tapGesture)
         
         //mapytype control
         mapTypeSegmentedControl.addTarget(self, action: #selector(mapTypeSegmentedControlValueChanged), for: .valueChanged)
         
         //for making cluster of annotation
-        mapView.register(UserAnnotationView.self, forAnnotationViewWithReuseIdentifier: MKMapViewDefaultAnnotationViewReuseIdentifier)
-        mapView.register(UserClusterAnnotationView.self, forAnnotationViewWithReuseIdentifier: MKMapViewDefaultClusterAnnotationViewReuseIdentifier)
+        mapView.register(MKMarkerAnnotationView.self, forAnnotationViewWithReuseIdentifier: MKMapViewDefaultAnnotationViewReuseIdentifier)
+        mapView.register(MKAnnotationView.self, forAnnotationViewWithReuseIdentifier: MKMapViewDefaultClusterAnnotationViewReuseIdentifier)
         
     }
+    //MARK: User Current Location
     func showUserLocation(){
         //locationManager.delegate = self
         mapView.userTrackingMode = .followWithHeading
@@ -150,12 +161,12 @@ class MapViewController: UIViewController {
     }
     
     
-    func showLocation(name : String, circularRegion: CLCircularRegion){
+    func showLocation(name : String, circularRegion: CLCircularRegion, locationSubtitle : String){
 //        mapView.removeAnnotations(mapView.annotations)
         
         // Create a new annotation pin..
         let centerCoordinate = circularRegion.center
-        createAnnotationPin(coordinate: centerCoordinate, locationName: name)
+        createAnnotationPin(coordinate: centerCoordinate, locationName: name, locationSubtitle: locationSubtitle)
         
         // Calculate the dynamic span based on the radius of the circular region
         let dynamicSpan = MKCoordinateSpan(
@@ -183,36 +194,40 @@ class MapViewController: UIViewController {
 //            completion()
 //        }
     }
-    func createAnnotationPin(coordinate : CLLocationCoordinate2D, locationName: String){
+    func createAnnotationPin(coordinate : CLLocationCoordinate2D, locationName: String, locationSubtitle : String){
         let landmarkAnnotation = MKPointAnnotation()
         landmarkAnnotation.title = locationName
+        landmarkAnnotation.subtitle = locationSubtitle
         landmarkAnnotation.coordinate = coordinate
         self.mapView.addAnnotation(landmarkAnnotation)
     }
     // Function to create an MKPointAnnotation
-    func createAnnotation(coordinate: CLLocationCoordinate2D, title: String?) -> MKPointAnnotation {
+    func createAnnotation(coordinate: CLLocationCoordinate2D, title: String?, subtitle: String?) -> MKPointAnnotation {
         let annotation = MKPointAnnotation()
         annotation.coordinate = coordinate
         annotation.title = title
+        annotation.subtitle = subtitle
         return annotation
     }
     func setCustomAnnotation(){
         let annotations: [MKPointAnnotation] = [
-            createAnnotation(coordinate: CLLocationCoordinate2D(latitude: 22.4345, longitude: 75.4959), title: "Indore"),
-            createAnnotation(coordinate: CLLocationCoordinate2D(latitude: 22.73, longitude: 75.79), title: "Rau"),
-            createAnnotation(coordinate: CLLocationCoordinate2D(latitude: 22.63, longitude: 75.89), title: "Dewas"),
-            createAnnotation(coordinate: CLLocationCoordinate2D(latitude: 22.83, longitude: 75.75), title: "Ujjain"),
-            createAnnotation(coordinate: CLLocationCoordinate2D(latitude: 23.1516, longitude: 77.2410), title: "Bhopal"),
-            createAnnotation(coordinate: CLLocationCoordinate2D(latitude: 21.0846, longitude: 79.055), title: "Nagpur"),
-            createAnnotation(coordinate: CLLocationCoordinate2D(latitude: 18.0046, longitude: 79.055), title: "Hyderabad"),
-            createAnnotation(coordinate: CLLocationCoordinate2D(latitude: 19.0046, longitude: 74.055), title: "Pune"),
-            createAnnotation(coordinate: CLLocationCoordinate2D(latitude: 19.3046, longitude: 73.055), title: "Mumbai"),
-            // Add more annotations...
+            createAnnotation(coordinate: CLLocationCoordinate2D(latitude: 22.4345, longitude: 75.4959), title: "Indore", subtitle: "M.P. India"),
+            createAnnotation(coordinate: CLLocationCoordinate2D(latitude: 22.73, longitude: 75.79), title: "Rau", subtitle: "M.P. India"),
+            createAnnotation(coordinate: CLLocationCoordinate2D(latitude: 22.63, longitude: 75.89), title: "Dewas", subtitle: "M.P. India"),
+            createAnnotation(coordinate: CLLocationCoordinate2D(latitude: 22.83, longitude: 75.75), title: "Ujjain", subtitle: "M.P. India"),
+            createAnnotation(coordinate: CLLocationCoordinate2D(latitude: 23.1516, longitude: 77.2410), title: "Bhopal", subtitle: "M.P. India"),
+            createAnnotation(coordinate: CLLocationCoordinate2D(latitude: 21.0846, longitude: 79.055), title: "Nagpur", subtitle: "M.H. India"),
+            createAnnotation(coordinate: CLLocationCoordinate2D(latitude: 18.0046, longitude: 79.055), title: "Hyderabad", subtitle: "A.P. India"),
+            createAnnotation(coordinate: CLLocationCoordinate2D(latitude: 19.0046, longitude: 74.055), title: "Pune", subtitle: "M.H. India"),
+            createAnnotation(coordinate: CLLocationCoordinate2D(latitude: 19.3046, longitude: 73.055), title: "Mumbai", subtitle: "M.H. India"),
+            createAnnotation(coordinate: CLLocationCoordinate2D(latitude: 20.4846, longitude: 74.055), title: "Bhopal", subtitle: "M.P. India"),
         ]
         
         mapView.addAnnotations(annotations)
     }
     
+    
+    //MARK: Polyline Drawing
     func mapThis(destinationCord : CLLocationCoordinate2D, makeEntirePolylineVisible : Bool){
         let sourceCordinate = (locationManager.location?.coordinate)!
         let sourcePlaceMark = MKPlacemark(coordinate: sourceCordinate)
@@ -245,7 +260,7 @@ class MapViewController: UIViewController {
             }
             // Remove existing overlays before adding the new one
             self.mapView.removeOverlays(self.mapView.overlays)
-            self.createAnnotationPin(coordinate: destinationCord, locationName: self.destinationName)
+            self.createAnnotationPin(coordinate: destinationCord, locationName: self.destinationName, locationSubtitle: "World")
             self.mapView.addOverlay(route.polyline)
             self.previousUserLocation = sourceCordinate
         }
@@ -263,6 +278,13 @@ class MapViewController: UIViewController {
 
            mapView.setRegion(region, animated: true)
        }
+    
+    func enableCallout(annotationView : MKAnnotationView){
+        annotationView.canShowCallout = true
+        
+        let rightButton = UIButton(type: .detailDisclosure)
+        annotationView.rightCalloutAccessoryView = rightButton
+    }
     
     func hideKeyboardOnTap(view : UIView){
         let tap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
@@ -297,7 +319,7 @@ class MapViewController: UIViewController {
         }
     }
     
-    //tap for lower versions than 16
+    //tap for selcting place in map
     @objc func handleTap(_ gestureRecognizer: UITapGestureRecognizer) {
         let location = gestureRecognizer.location(in: mapView)
         let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
@@ -306,8 +328,7 @@ class MapViewController: UIViewController {
                 print("Tapped on location: \(locationName)")
                 self.destinationName = locationName
                 //self.mapView.removeAnnotations(self.mapView.annotations)
-                self.createAnnotationPin(coordinate: coordinate, locationName: locationName)
-                
+                self.createAnnotationPin(coordinate: coordinate, locationName: locationName, locationSubtitle: "World")
             }
         }
     }
@@ -348,6 +369,7 @@ extension MapViewController : MKMapViewDelegate{
                 if let image = UIImage(named: "userLocation")?.resize(targetSize: imageSize) {
                     let annotationView = mapView.view(for: annotation) ?? MKAnnotationView(annotation: annotation, reuseIdentifier: nil)
                     annotationView.image = image
+                    enableCallout(annotationView: annotationView)
                     return annotationView
                 }
             }else{
@@ -357,14 +379,22 @@ extension MapViewController : MKMapViewDelegate{
                 cancelOverlayView.isHidden = false
                 self.destinationName = (annotation.title ?? "")!
                 
+                let annotationView = CustomAnnotationView(annotation:annotation, reuseIdentifier:"UserAnnotationView")
+                annotationView.clusteringIdentifier = "UserAnnotationView"
+                annotationView.canShowCallout = false
+                
+                return annotationView
+                
             }
             return nil
         }
         // If it's a cluster, use a marker annotation view for the cluster
         let clusterView = MKMarkerAnnotationView(annotation: cluster, reuseIdentifier: "cluster")
-        clusterView.titleVisibility = .visible
+        clusterView.titleVisibility = .hidden
         clusterView.subtitleVisibility = .hidden
         clusterView.markerTintColor = UIColor.blue
+        
+        enableCallout(annotationView: clusterView)
         return clusterView
     }
     
@@ -372,15 +402,37 @@ extension MapViewController : MKMapViewDelegate{
         print("cluster modifying")
         // Create a custom cluster annotation with the specified individual annotations
         let clusterAnnotation = MKClusterAnnotation(memberAnnotations: memberAnnotations)
-        
-        // Customize the title and subtitle for the group of annotations
         clusterAnnotation.title = "\(memberAnnotations.count) locations"
         return clusterAnnotation
     }
     
     
-    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        // Handle the selection of the annotation here
+//    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+//        // Handle the selection of the annotation here
+//        print(view)
+//        print("annotation selcted")
+//    }
+//    
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        
+        if let cluster = view.annotation as? MKClusterAnnotation {
+            // Access all member annotations in the cluster
+            let memberAnnotations = cluster.memberAnnotations
+            clusterAnnotationData.removeAll()
+            for annotation in memberAnnotations {
+                let title = annotation.title
+                let subtitle = annotation.subtitle
+                // Access other properties as needed
+                let data = ClusterAnnotationData(locationName: title! ?? "", subtitle: subtitle! ?? "")
+                clusterAnnotationData.append(data)
+            }
+            openBackgroungLocationView()
+        }else{
+            let title = view.annotation?.title
+            let subtitle = view.annotation?.subtitle
+            // Access other properties as needed
+            print("Title: \(String(describing: title)), Subtitle: \(String(describing: subtitle))")
+        }
     }
 }
 
@@ -393,16 +445,46 @@ extension MapViewController: CLLocationManagerDelegate {
 }
 
 
-//MARK: Back Search View
+//MARK: CalloutView Delegate
+extension MapViewController : MyCalloutViewDelegate{
+    func mapView(_ mapView: MKMapView, didTapDetailsButton button: UIButton, for annotation: MKAnnotation) {
+        guard let title = annotation.title, let subtitle = annotation.subtitle else{
+            return
+        }
+        clusterAnnotationData.removeAll()
+        backgroundLocationName.text = title
+        backgroundLocationSubtitle.text = subtitle
+        openBackgroungLocationView()
+        print("callout detail pressed")
+    }
+}
+
+
+//MARK: Background View
 extension MapViewController: UITableViewDelegate, UITableViewDataSource{
     
     func closeBackgroungSearchView() {
         view.sendSubviewToBack(backSearchView)
+        
     }
     
     func openBackgroungSearchView() {
         view.bringSubviewToFront(backSearchView)
         textFieldForAddress.becomeFirstResponder()
+    }
+    
+    func closeBackgroungLocationView() {
+        view.sendSubviewToBack(backgroundLocationDetailView)
+    }
+    
+    func openBackgroungLocationView() {
+        view.bringSubviewToFront(backgroundLocationDetailView)
+        if(clusterAnnotationData.count != 0){
+            backgroundSingleLocationView.isHidden = true
+            backgroundLocationTableView.reloadData()
+        }else{
+            backgroundSingleLocationView.isHidden = false
+        }
     }
     
     @objc func searchLocations(){
@@ -426,26 +508,43 @@ extension MapViewController: UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        noDataLabel.isHidden = matches.count == 0 ? false : true
-        return matches.count
+        if tableView == locationTableView{
+            noDataLabel.isHidden = matches.count == 0 ? false : true
+            return matches.count
+        }else{
+            backgroundTotalLocationsLabel.text = "\(clusterAnnotationData.count) locations "
+            return clusterAnnotationData.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let location = matches[indexPath.row].placemark
-        let cell = tableView.dequeueReusableCell(withIdentifier: "LocationCell") as! LocationCell
-        cell.locationName.text = location.name
-        cell.locationDetail.text = location.title
-        return cell
+        if tableView == locationTableView{
+            let location = matches[indexPath.row].placemark
+            let cell = tableView.dequeueReusableCell(withIdentifier: "LocationCell") as! LocationCell
+            cell.locationName.text = location.name
+            cell.locationDetail.text = location.title
+            return cell
+        }else{
+            let location = clusterAnnotationData[indexPath.row]
+            let cell = tableView.dequeueReusableCell(withIdentifier: "LocationDetailCell") as! LocationDetailCell
+            cell.locationName.text = location.locationName
+            cell.locationDetail.text = location.subtitle
+            return cell
+        }
     }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let location = matches[indexPath.row].placemark
-        closeBackgroungSearchView()
-        destinationAddressCoordinate = location.coordinate
-        staticSearchTextField.text = location.name
-        directionButtonView.isHidden = false
-        cancelOverlayView.isHidden = false
-        self.destinationName = location.name!
-        showLocation(name: location.name ?? "", circularRegion: location.region as! CLCircularRegion)
+        if tableView == locationTableView{
+            let location = matches[indexPath.row].placemark
+            print(location)
+            closeBackgroungSearchView()
+            destinationAddressCoordinate = location.coordinate
+            staticSearchTextField.text = location.name
+            directionButtonView.isHidden = false
+            cancelOverlayView.isHidden = false
+            self.destinationName = location.name!
+            showLocation(name: location.name ?? "", circularRegion: location.region as! CLCircularRegion, locationSubtitle: location.subtitle ?? location.country ?? "World")
+        }
     }
 }
 
@@ -453,6 +552,13 @@ extension MapViewController: UITableViewDelegate, UITableViewDataSource{
 //MARK: Location Cell
 
 class LocationCell : UITableViewCell{
+    
+    @IBOutlet weak var locationName : UILabel!
+    @IBOutlet weak var locationDetail : UILabel!
+    
+}
+
+class LocationDetailCell : UITableViewCell{
     
     @IBOutlet weak var locationName : UILabel!
     @IBOutlet weak var locationDetail : UILabel!
