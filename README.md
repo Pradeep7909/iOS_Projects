@@ -1,5 +1,5 @@
 #  Arfof Demo
-A sample project on Ecommerce Application with Authentication, Realtime chat and Map
+A sample project on Ecommerce Application with Authentication, Realtime chat and Map.
 
 
 - [Description](#Description)
