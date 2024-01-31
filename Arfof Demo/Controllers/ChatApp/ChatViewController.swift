@@ -45,10 +45,21 @@ class ChatViewController: UIViewController , UIScrollViewDelegate{
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("ViewDidLoad")
         setScreen()
         hideKeyboardTappedAround()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        print("viewWillAppear")
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        print("viewWillDisappear")
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        print("viewDidAppear")
     }
     
     

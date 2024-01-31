@@ -142,8 +142,6 @@ class DashBoardViewController: UIViewController{
         dateFormatter.dateFormat = format
         return dateFormatter.string(from: date)
     }
-
-
 }
 
 // for line chart....

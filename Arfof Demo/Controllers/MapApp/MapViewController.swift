@@ -13,16 +13,16 @@ class MapViewController: UIViewController {
     
     
     //MARK: Variables
-    let locationManager = CLLocationManager()
+    private let locationManager = CLLocationManager()
     var matches: [MKMapItem] = []
-    var searchTimer: Timer?
+    private var searchTimer: Timer?
     var destinationAddressCoordinate: CLLocationCoordinate2D?
-    var lastDrawnTimer: Timer?
-    var previousUserLocation : CLLocationCoordinate2D?
+    private var lastDrawnTimer: Timer?
+    private var previousUserLocation : CLLocationCoordinate2D?
     var destinationName: String = ""
     var clusterAnnotationData : [ClusterAnnotationData] = []
-    let minSpan = MKCoordinateSpan(latitudeDelta: 0.001, longitudeDelta: 0.001)
-    let maxSpan = MKCoordinateSpan(latitudeDelta: 100.0, longitudeDelta: 100.0)
+    private let minSpan = MKCoordinateSpan(latitudeDelta: 0.001, longitudeDelta: 0.001)
+    private let maxSpan = MKCoordinateSpan(latitudeDelta: 100.0, longitudeDelta: 100.0)
     
     
     @IBOutlet var mapView: MKMapView!
@@ -460,93 +460,6 @@ extension MapViewController : MyCalloutViewDelegate{
 }
 
 
-//MARK: Background View
-extension MapViewController: UITableViewDelegate, UITableViewDataSource{
-    
-    func closeBackgroungSearchView() {
-        view.sendSubviewToBack(backSearchView)
-        
-    }
-    
-    func openBackgroungSearchView() {
-        view.bringSubviewToFront(backSearchView)
-        textFieldForAddress.becomeFirstResponder()
-    }
-    
-    func closeBackgroungLocationView() {
-        view.sendSubviewToBack(backgroundLocationDetailView)
-    }
-    
-    func openBackgroungLocationView() {
-        view.bringSubviewToFront(backgroundLocationDetailView)
-        if(clusterAnnotationData.count != 0){
-            backgroundSingleLocationView.isHidden = true
-            backgroundLocationTableView.reloadData()
-        }else{
-            backgroundSingleLocationView.isHidden = false
-        }
-    }
-    
-    @objc func searchLocations(){
-        guard let address = textFieldForAddress.text else{
-            print("address is nil")
-            return
-        }
-        let request = MKLocalSearch.Request()
-        request.naturalLanguageQuery = address
-        let search = MKLocalSearch(request: request)
-        search.start { response, _ in
-            guard let response = response else{
-                print("No response")
-                self.matches.removeAll()
-                self.locationTableView.reloadData()
-                return
-            }
-            self.matches = response.mapItems
-            self.locationTableView.reloadData()
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if tableView == locationTableView{
-            noDataLabel.isHidden = matches.count == 0 ? false : true
-            return matches.count
-        }else{
-            backgroundTotalLocationsLabel.text = "\(clusterAnnotationData.count) locations "
-            return clusterAnnotationData.count
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if tableView == locationTableView{
-            let location = matches[indexPath.row].placemark
-            let cell = tableView.dequeueReusableCell(withIdentifier: "LocationCell") as! LocationCell
-            cell.locationName.text = location.name
-            cell.locationDetail.text = location.title
-            return cell
-        }else{
-            let location = clusterAnnotationData[indexPath.row]
-            let cell = tableView.dequeueReusableCell(withIdentifier: "LocationDetailCell") as! LocationDetailCell
-            cell.locationName.text = location.locationName
-            cell.locationDetail.text = location.subtitle
-            return cell
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if tableView == locationTableView{
-            let location = matches[indexPath.row].placemark
-            print(location)
-            closeBackgroungSearchView()
-            destinationAddressCoordinate = location.coordinate
-            staticSearchTextField.text = location.name
-            directionButtonView.isHidden = false
-            cancelOverlayView.isHidden = false
-            self.destinationName = location.name!
-            showLocation(name: location.name ?? "", circularRegion: location.region as! CLCircularRegion, locationSubtitle: location.subtitle ?? location.country ?? "World")
-        }
-    }
-}
 
 
 //MARK: Location Cell

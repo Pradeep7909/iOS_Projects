@@ -74,3 +74,16 @@ struct ClusterAnnotationData{
     let locationName: String
     let subtitle: String
 }
+
+
+struct Product : Codable {
+    var id : String?
+    var name : String?
+}
+struct ProductsResponse: Decodable {
+    var products: [Product]
+
+    enum CodingKeys: String, CodingKey {
+        case products = "response"
+    }
+}
