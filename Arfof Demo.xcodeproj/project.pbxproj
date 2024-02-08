@@ -318,9 +318,7 @@
 				94A6F0F92B18A78E00FA11D8 /* Core Login */,
 				94F669602B3AD74D00F2E333 /* ChatApp */,
 				AE9E46E22B610EB00032E0DE /* MapApp */,
-				AEA850A42B677D9C007C9393 /* PlaygroundViewController.swift */,
-				AE99E6992B6910A700689DE9 /* ImageUploadUsingPicker.swift */,
-				AEA850A62B67B2AA007C9393 /* AtmViewController.swift */,
+				AE9EDAF82B6B5D9D002FEAD2 /* MultiThreading */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -564,6 +562,16 @@
 				AEEC6A062B63C9780082ED64 /* Callout Annotation */,
 			);
 			path = MapApp;
+			sourceTree = "<group>";
+		};
+		AE9EDAF82B6B5D9D002FEAD2 /* MultiThreading */ = {
+			isa = PBXGroup;
+			children = (
+				AEA850A42B677D9C007C9393 /* PlaygroundViewController.swift */,
+				AE99E6992B6910A700689DE9 /* ImageUploadUsingPicker.swift */,
+				AEA850A62B67B2AA007C9393 /* AtmViewController.swift */,
+			);
+			path = MultiThreading;
 			sourceTree = "<group>";
 		};
 		AEB915B22B57937300CA6EB7 /* Helper Files */ = {
