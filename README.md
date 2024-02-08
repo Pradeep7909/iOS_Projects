@@ -32,6 +32,9 @@ These application consists of:
 - **Recent Chats Screen:** Shows a list of recent chats for quick access.
 - **All Users Screen:** Displays all users of the application.
 - **Chat Screen:** Enables users to engage in real-time chat and share images.
+- **Custom Notification UI:** User can even reply and mark message as seen from notification.
+- **Addition Features:** User Online/Offline, Message Seen/Unseen, Edit/Delete option
+
 
 ### Map Integration
 - **MapView:** Utilizes MapKit to display a map.
