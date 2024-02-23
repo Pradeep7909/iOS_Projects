@@ -8,16 +8,27 @@
 import Foundation
 import UIKit
 @IBDesignable
-class customButton: UIButton {
+class CustomButton: UIButton {
     @IBInspectable  var cornerRadius: CGFloat = 0{
         didSet{
             self.layer.cornerRadius = cornerRadius
         }
     }
+    @IBInspectable  var borderColor: UIColor = .black{
+        didSet{
+            self.layer.borderColor = borderColor.cgColor
+        }
+    }
+    @IBInspectable  var borderWidth: CGFloat = 1 {
+        didSet{
+            self.layer.borderWidth = borderWidth
+        }
+    }
+
 }
 
 @IBDesignable
-class customView: UIView{
+class CustomView: UIView{
     @IBInspectable  var cornerRadius: CGFloat = 0{
         didSet{
             self.layer.cornerRadius = cornerRadius
@@ -37,7 +48,7 @@ class customView: UIView{
 
 
 @IBDesignable
-class CustomViewShadow: customView {
+class CustomViewShadow: CustomView {
     @IBInspectable var shadowOpacity: Float = 0 {
         didSet {
             self.layer.shadowOpacity = shadowOpacity
@@ -65,7 +76,7 @@ class CustomViewShadow: customView {
 
 
 @IBDesignable
-class customImage: UIImageView{
+class CustomImage: UIImageView{
     @IBInspectable  var cornerRadius: CGFloat = 0{
         didSet{
             self.layer.cornerRadius = cornerRadius
@@ -122,5 +133,19 @@ class customLabel: UILabel {
         }
         
         attributedText = attributedString
+    }
+}
+
+
+@IBDesignable class GradientView: UIView {
+    @IBInspectable var topColor: UIColor = UIColor.white
+    @IBInspectable var bottomColor: UIColor = UIColor.black
+
+    override class var layerClass: AnyClass {
+        return CAGradientLayer.self
+    }
+
+    override func layoutSubviews() {
+        (layer as! CAGradientLayer).colors = [topColor.cgColor, bottomColor.cgColor]
     }
 }

@@ -124,7 +124,7 @@ extension HomeScreenViewController : UICollectionViewDelegate , UICollectionView
         }else {
             let cell = trendingItemsCollection.dequeueReusableCell(withReuseIdentifier: "productCell", for: indexPath) as! productCell
             cell.productImage.image = UIImage(named: productImages[indexPath.row])
-            cell.productImage.heroID = "customImageTransition_\(indexPath.row)"
+            cell.productImage.heroID = "CustomImageTransition_\(indexPath.row)"
             print("hero id of each cell = \(String(describing: cell.productImage.heroID))")
             return cell
         }
@@ -138,7 +138,7 @@ extension HomeScreenViewController : UICollectionViewDelegate , UICollectionView
             let controller = self.storyboard?.instantiateViewController(withIdentifier: "ProductViewController") as! ProductViewController
             let selectedCell = collectionView.cellForItem(at: indexPath) as! productCell
             controller.selectedImage = selectedCell.productImage.image
-            controller.heroId = "customImageTransition_\(indexPath.row)"
+            controller.heroId = "CustomImageTransition_\(indexPath.row)"
             print("ID before navigation of product screen \(controller.heroId)")
             self.navigationController?.pushViewController(controller, animated: true)
         }

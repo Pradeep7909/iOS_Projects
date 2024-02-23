@@ -360,7 +360,7 @@ extension SingleStoreViewController : UICollectionViewDataSource, UICollectionVi
 
 class StoreProductCell: UICollectionViewCell {
     
-    @IBOutlet weak var productImage: customImage!
+    @IBOutlet weak var productImage: CustomImage!
     
 }
 

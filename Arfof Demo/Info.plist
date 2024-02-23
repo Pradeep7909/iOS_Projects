@@ -10,13 +10,11 @@
 	<string>Demo app required user location </string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Demo app required user location </string>
-    
-    <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsArbitraryLoads</key>
-        <true/>
-    </dict>
-    
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>CFBundleDocumentTypes</key>
 	<array/>
 	<key>CFBundleURLTypes</key>
@@ -81,5 +79,9 @@
 		<string>processing</string>
 		<string>remote-notification</string>
 	</array>
+	<key>NSFaceIDUsageDescription</key>
+	<string>We use Face ID to secure your account.</string>
+    <key>NSLocalAuthenticationUsageDescription</key>
+    <string>We use Touch ID to secure your account.</string>
 </dict>
 </plist>

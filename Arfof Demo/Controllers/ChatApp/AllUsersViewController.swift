@@ -97,7 +97,7 @@ extension AllUsersViewController : UITableViewDelegate , UITableViewDataSource{
 //MARK: Table Cell
 class AllUsersTableCell : UITableViewCell{
     
-    @IBOutlet weak var userProfileImage: customImage!
+    @IBOutlet weak var userProfileImage: CustomImage!
     @IBOutlet weak var userName: UILabel!
     @IBOutlet weak var userAbout: UILabel!
     

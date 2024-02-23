@@ -11,10 +11,10 @@ import DGCharts
 class DashBoardViewController: UIViewController{
 
     
-    @IBOutlet weak var todayView: customView!
-    @IBOutlet weak var weeklyView: customView!
-    @IBOutlet weak var monthlyView: customView!
-    @IBOutlet weak var yearlyView: customView!
+    @IBOutlet weak var todayView: CustomView!
+    @IBOutlet weak var weeklyView: CustomView!
+    @IBOutlet weak var monthlyView: CustomView!
+    @IBOutlet weak var yearlyView: CustomView!
     
     @IBOutlet weak var todayLabel: UILabel!
     @IBOutlet weak var weeklyLabel: UILabel!

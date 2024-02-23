@@ -17,7 +17,7 @@ class HomeViewController: UIViewController {
     var recentChats: [UserChatData] = []
     
     
-    @IBOutlet weak var userProfileImage: customImage!
+    @IBOutlet weak var userProfileImage: CustomImage!
     @IBOutlet weak var recentChatTableView: UITableView!
     
     override func viewDidLoad() {
@@ -219,12 +219,12 @@ extension HomeViewController : UITableViewDelegate, UITableViewDataSource{
 //MARK: Table Cell
 class RecentChatCell : UITableViewCell{
     
-    @IBOutlet weak var userProfileImage: customImage!
+    @IBOutlet weak var userProfileImage: CustomImage!
     @IBOutlet weak var userName: UILabel!
     @IBOutlet weak var lastMsg: UILabel!
     @IBOutlet weak var lastMsgTime: UILabel!
-    @IBOutlet weak var unreadCountView: customView!
+    @IBOutlet weak var unreadCountView: CustomView!
     @IBOutlet weak var unreadMsgLabel: UILabel!
-    @IBOutlet weak var userOnlineView: customView!
+    @IBOutlet weak var userOnlineView: CustomView!
     
 }

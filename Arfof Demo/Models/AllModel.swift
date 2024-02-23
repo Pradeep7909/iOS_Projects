@@ -87,3 +87,22 @@ struct ProductsResponse: Decodable {
         case products = "response"
     }
 }
+
+
+struct FoodMenu {
+    var name : String
+    var image : String
+}
+
+let foodMenuArray: [FoodMenu] = [
+    FoodMenu(name: "Pizza", image: "https://www.pngall.com/wp-content/uploads/2016/05/Pizza-Free-PNG-Image.png"),
+    FoodMenu(name: "Burger", image: "https://www.pngall.com/wp-content/uploads/2016/05/Burger-Free-Download-PNG.png"),
+    FoodMenu(name: "Pasta", image: "http://pngimg.com/uploads/pasta/pasta_PNG58.png"),
+    FoodMenu(name: "Salad", image: "https://www.pngarts.com/files/2/Fruit-Salad-Transparent-Images.png"),
+    FoodMenu(name: "Noodles", image: "https://purepng.com/public/uploads/large/purepng.com-noodlenoodlechinesestaple-foodwheat-doughnudel-1411527963191asbjf.png"),
+    FoodMenu(name: "Biryani", image: "https://pngbuy.com/wp-content/uploads/2023/06/Veg-biryani-png-400x400.png"),
+    
+    FoodMenu(name: "Masala Dosa", image: "https://wowjohn.com/wp-content/uploads/2022/05/dosa-png-images-1-Transparent-Images.png"),
+    FoodMenu(name: "Chole Bhature", image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjh05ESvgpgeXFm9YFPNE4Y58ZIw1lVPNNBAesc-YUDc9yZqfBozB8cpC73ZngVgkMsW83h-7jxz3BDWixcqdfjA54uw3xUbaCTexK-1neX_vr-I25UiDc3snB4hRyjppRyaatAFX3yM3xjeri0xar_sjwqn7F9v6ZmggQjsgK1UIMz5j_S51d-A7oc/s478/indian_Chole_%20Bhature.png"),
+]
+

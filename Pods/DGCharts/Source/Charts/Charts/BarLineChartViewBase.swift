@@ -95,7 +95,7 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
     internal var _panGestureRecognizer: NSUIPanGestureRecognizer!
     
     /// flag that indicates if a custom viewport offset has been set
-    private var _customViewPortEnabled = false
+    private var _CustomViewPortEnabled = false
     
     public override init(frame: CGRect)
     {
@@ -420,7 +420,7 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
     
     internal override func calculateOffsets()
     {
-        if !_customViewPortEnabled
+        if !_CustomViewPortEnabled
         {
             var offsetLeft = CGFloat(0.0)
             var offsetRight = CGFloat(0.0)
@@ -1497,7 +1497,7 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
     /// ONLY USE THIS WHEN YOU KNOW WHAT YOU ARE DOING, else use `setExtraOffsets(...)`.
     @objc open func setViewPortOffsets(left: CGFloat, top: CGFloat, right: CGFloat, bottom: CGFloat)
     {
-        _customViewPortEnabled = true
+        _CustomViewPortEnabled = true
         
         if Thread.isMainThread
         {
@@ -1516,7 +1516,7 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
     /// Resets all custom offsets set via `setViewPortOffsets(...)` method. Allows the chart to again calculate all offsets automatically.
     @objc open func resetViewPortOffsets()
     {
-        _customViewPortEnabled = false
+        _CustomViewPortEnabled = false
         calculateOffsets()
     }
 

@@ -31,7 +31,7 @@ class ChatViewController: UIViewController , UIScrollViewDelegate{
     
     @IBOutlet weak var msgTextField: UITextField!
     @IBOutlet weak var chatTableView: UITableView!
-    @IBOutlet weak var receiverProfileImage: customImage!
+    @IBOutlet weak var receiverProfileImage: CustomImage!
     @IBOutlet weak var receiverNamelabel: UILabel!
     @IBOutlet weak var textfieldBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var attachMsgView: UIView!

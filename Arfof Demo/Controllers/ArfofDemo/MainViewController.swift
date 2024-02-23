@@ -18,7 +18,7 @@ class MainViewController: UIViewController,TabPageViewControllerDelegate {
     @IBOutlet weak var exploreTabView: UIView!
     @IBOutlet weak var ordersTabView: UIView!
     @IBOutlet weak var profileTabView: UIView!
-    @IBOutlet weak var searchTabView: customView!
+    @IBOutlet weak var searchTabView: CustomView!
     
     @IBOutlet weak var homeImage: UIImageView!
     @IBOutlet weak var exploreImage: UIImageView!
@@ -32,8 +32,8 @@ class MainViewController: UIViewController,TabPageViewControllerDelegate {
     
     @IBOutlet weak var exploreScreenBackground: UIView!
     @IBOutlet weak var backExploreButton: UIView!
-    @IBOutlet weak var backAccessoriesView: customView!
-    @IBOutlet weak var backFoodView: customView!
+    @IBOutlet weak var backAccessoriesView: CustomView!
+    @IBOutlet weak var backFoodView: CustomView!
     @IBOutlet weak var backExploreContraints: NSLayoutConstraint!
     
     
