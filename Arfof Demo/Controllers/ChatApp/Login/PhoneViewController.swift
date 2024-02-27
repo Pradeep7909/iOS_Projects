@@ -7,7 +7,7 @@
 
 import UIKit
 import FBSDKLoginKit
-import GoogleSignIn
+//import GoogleSignIn
 import FirebaseAuth
 import WebKit
 
@@ -91,34 +91,36 @@ class PhoneViewController: UIViewController , UITextFieldDelegate, WKNavigationD
     
     // for google
     @IBAction func googleLoginButtonAction(_ sender: Any) {
-        GIDSignIn.sharedInstance.signIn(withPresenting: self) { signInResult, error in
-            guard error == nil else {
-                // Handle sign-in error
-                print("Google Sign-In error: \(error!.localizedDescription)")
-                return
-            }
-            
-            if let user = GIDSignIn.sharedInstance.currentUser {
-                let userId = user.userID
-                let fullName = user.profile?.name
-                let givenName = user.profile?.givenName
-                let familyName = user.profile?.familyName
-                let email = user.profile?.email
-                
-                // Print user info..
-                print("User ID: \(userId ?? "")")
-                print("Full Name: \(fullName ?? "")")
-                print("Given Name: \(givenName ?? "")")
-                print("Family Name: \(familyName ?? "")")
-                print("Email: \(email ?? "")")
-                
-                // Navigate to the Account screen
-                let controller = self.storyboard?.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
-                
-                controller.accountHeaderLabel = "Logged in using Google"
-                self.navigationController?.pushViewController(controller, animated: true)
-            }
-        }
+        
+        print("google sign  up reoved for now becuase webrtc , giving error of googlesignin so  i remove that pod for now")
+//        GIDSignIn.sharedInstance.signIn(withPresenting: self) { signInResult, error in
+//            guard error == nil else {
+//                // Handle sign-in error
+//                print("Google Sign-In error: \(error!.localizedDescription)")
+//                return
+//            }
+//            
+//            if let user = GIDSignIn.sharedInstance.currentUser {
+//                let userId = user.userID
+//                let fullName = user.profile?.name
+//                let givenName = user.profile?.givenName
+//                let familyName = user.profile?.familyName
+//                let email = user.profile?.email
+//                
+//                // Print user info..
+//                print("User ID: \(userId ?? "")")
+//                print("Full Name: \(fullName ?? "")")
+//                print("Given Name: \(givenName ?? "")")
+//                print("Family Name: \(familyName ?? "")")
+//                print("Email: \(email ?? "")")
+//                
+//                // Navigate to the Account screen
+//                let controller = self.storyboard?.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
+//                
+//                controller.accountHeaderLabel = "Logged in using Google"
+//                self.navigationController?.pushViewController(controller, animated: true)
+//            }
+//        }
     }
     
     // for github

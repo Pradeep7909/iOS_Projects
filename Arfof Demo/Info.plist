@@ -81,7 +81,11 @@
 	</array>
 	<key>NSFaceIDUsageDescription</key>
 	<string>We use Face ID to secure your account.</string>
-    <key>NSLocalAuthenticationUsageDescription</key>
-    <string>We use Touch ID to secure your account.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We use Microphone for calling</string>
+	<key>NSCameraUsageDescription</key>
+	<string>We want Camera Access for call</string>
+	<key>NSLocalAuthenticationUsageDescription</key>
+	<string>We use Touch ID to secure your account.</string>
 </dict>
 </plist>

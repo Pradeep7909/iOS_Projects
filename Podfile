@@ -17,15 +17,17 @@ target 'Arfof Demo' do
   pod 'Firebase/Crashlytics'
   pod 'FirebaseInAppMessaging', '~> 10.19.0-beta'
   pod 'Firebase/Firestore'
-  pod 'GoogleSignIn'
+#  pod 'GoogleSignIn'
   
   pod 'FBSDKCoreKit'
   pod 'FBSDKLoginKit'
   pod 'FBSDKShareKit'
   
   pod 'SDWebImage'
+  pod 'GoogleWebRTC'
+  pod 'SwiftyJSON'
+  pod 'iOSDropDown'
 
-  
   
   
   target 'Arfof DemoTests' do

@@ -11,7 +11,7 @@ import Firebase
 import FirebaseCore
 import FirebaseAuth
 import FBSDKCoreKit
-import GoogleSignIn
+//import GoogleSignIn
 import FirebaseInAppMessaging
 import UserNotifications
 import UserNotificationsUI
@@ -54,7 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         }
         else{
             // Handle Google URL scheme
-            flag = GIDSignIn.sharedInstance.handle(url)
+//            flag = GIDSignIn.sharedInstance.handle(url)
         }
         return flag
     }

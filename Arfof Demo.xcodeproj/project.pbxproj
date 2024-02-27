@@ -71,6 +71,9 @@
 		AE54F4662B491BF600D22230 /* DataSharingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE54F4642B491BE700D22230 /* DataSharingManager.swift */; };
 		AE54F4682B49224400D22230 /* InAppMessageFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE54F4672B49224400D22230 /* InAppMessageFile.swift */; };
 		AE99E69A2B6910A700689DE9 /* ImageUploadUsingPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE99E6992B6910A700689DE9 /* ImageUploadUsingPicker.swift */; };
+		AE9E500C2B89BE0100D4F873 /* InitialCallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9E500B2B89BE0100D4F873 /* InitialCallViewController.swift */; };
+		AE9E500E2B89BEF400D4F873 /* VideoChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9E500D2B89BEF400D4F873 /* VideoChatViewController.swift */; };
+		AE9E50102B89C1F600D4F873 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9E500F2B89C1F600D4F873 /* Utility.swift */; };
 		AEA083182B583C7D004B51DA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AEBB93EB2B4D785600E9F9F5 /* GoogleService-Info.plist */; };
 		AEA294E22B4FB60100C9F3B5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEA294E12B4FB60100C9F3B5 /* Assets.xcassets */; };
 		AEA294E42B4FBFF600C9F3B5 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA294E32B4FBFF600C9F3B5 /* ChatViewController.swift */; };
@@ -93,6 +96,7 @@
 		AEB21F262B88C3B000947659 /* ChipotleMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB21F252B88C3B000947659 /* ChipotleMapViewController.swift */; };
 		AEB21F282B88C54400947659 /* TestStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEB21F272B88C54400947659 /* TestStoryboard.storyboard */; };
 		AEB21F2A2B88C76600947659 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEB21F292B88C76600947659 /* LocalAuthentication.framework */; };
+		AEB21F2F2B88C9C600947659 /* CallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB21F2E2B88C9C600947659 /* CallViewController.swift */; };
 		AEB8DE702B4E5E67005439D4 /* AllUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB8DE6F2B4E5E67005439D4 /* AllUsersViewController.swift */; };
 		AEB8DE722B4E9155005439D4 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB8DE712B4E9155005439D4 /* ActivityIndicator.swift */; };
 		AEB8DE742B4E91B7005439D4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB8DE732B4E91B7005439D4 /* Constants.swift */; };
@@ -241,6 +245,9 @@
 		AE54F4672B49224400D22230 /* InAppMessageFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageFile.swift; sourceTree = "<group>"; };
 		AE8515B62B5A7C4800F4B65E /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		AE99E6992B6910A700689DE9 /* ImageUploadUsingPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploadUsingPicker.swift; sourceTree = "<group>"; };
+		AE9E500B2B89BE0100D4F873 /* InitialCallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialCallViewController.swift; sourceTree = "<group>"; };
+		AE9E500D2B89BEF400D4F873 /* VideoChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoChatViewController.swift; sourceTree = "<group>"; };
+		AE9E500F2B89C1F600D4F873 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		AEA294E12B4FB60100C9F3B5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AEA294E32B4FBFF600C9F3B5 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		AEA850A42B677D9C007C9393 /* PlaygroundViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundViewController.swift; sourceTree = "<group>"; };
@@ -262,6 +269,7 @@
 		AEB21F252B88C3B000947659 /* ChipotleMapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChipotleMapViewController.swift; sourceTree = "<group>"; };
 		AEB21F272B88C54400947659 /* TestStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TestStoryboard.storyboard; sourceTree = "<group>"; };
 		AEB21F292B88C76600947659 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
+		AEB21F2E2B88C9C600947659 /* CallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallViewController.swift; sourceTree = "<group>"; };
 		AEB654582B6229690098EF6B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		AEB8DE6F2B4E5E67005439D4 /* AllUsersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllUsersViewController.swift; sourceTree = "<group>"; };
 		AEB8DE712B4E9155005439D4 /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
@@ -355,7 +363,9 @@
 				94F669602B3AD74D00F2E333 /* ChatApp */,
 				AE9E46E22B610EB00032E0DE /* MapApp */,
 				AE9EDAF82B6B5D9D002FEAD2 /* MultiThreading */,
+				AEB21F2B2B88C96F00947659 /* Practice */,
 				AE69D1862B88B94300E07E41 /* Chipotle Replicate */,
+				AE9E500A2B89BDB400D4F873 /* Video Call */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -627,6 +637,16 @@
 			path = MapApp;
 			sourceTree = "<group>";
 		};
+		AE9E500A2B89BDB400D4F873 /* Video Call */ = {
+			isa = PBXGroup;
+			children = (
+				AE9E500B2B89BE0100D4F873 /* InitialCallViewController.swift */,
+				AE9E500D2B89BEF400D4F873 /* VideoChatViewController.swift */,
+				AE9E500F2B89C1F600D4F873 /* Utility.swift */,
+			);
+			path = "Video Call";
+			sourceTree = "<group>";
+		};
 		AE9EDAF82B6B5D9D002FEAD2 /* MultiThreading */ = {
 			isa = PBXGroup;
 			children = (
@@ -656,6 +676,14 @@
 				AEB21F252B88C3B000947659 /* ChipotleMapViewController.swift */,
 			);
 			path = Map;
+			sourceTree = "<group>";
+		};
+		AEB21F2B2B88C96F00947659 /* Practice */ = {
+			isa = PBXGroup;
+			children = (
+				AEB21F2E2B88C9C600947659 /* CallViewController.swift */,
+			);
+			path = Practice;
 			sourceTree = "<group>";
 		};
 		AEB915B22B57937300CA6EB7 /* Helper Files */ = {
@@ -1075,6 +1103,7 @@
 			files = (
 				94A6F0FD2B18A85900FA11D8 /* SearchViewController.swift in Sources */,
 				94F669662B3AD7B200F2E333 /* HomeViewController.swift in Sources */,
+				AEB21F2F2B88C9C600947659 /* CallViewController.swift in Sources */,
 				944C1D0B2B19EC6C00D3B966 /* CustomViews.swift in Sources */,
 				94F7A63B2B2732B7004CF1A8 /* ShopOffersViewController.swift in Sources */,
 				947624F92B3AA8660029A5DA /* LoginValidation.swift in Sources */,
@@ -1094,6 +1123,7 @@
 				AE54F4682B49224400D22230 /* InAppMessageFile.swift in Sources */,
 				944995422B20986F008CE055 /* SimilarProductCell.swift in Sources */,
 				AEB8DE742B4E91B7005439D4 /* Constants.swift in Sources */,
+				AE9E500E2B89BEF400D4F873 /* VideoChatViewController.swift in Sources */,
 				AEB21F042B88BF5D00947659 /* ChipotleOnBoardingSecondPageViewController.swift in Sources */,
 				AEA850A52B677D9C007C9393 /* PlaygroundViewController.swift in Sources */,
 				AEB915BA2B580AAD00CA6EB7 /* RealtimeDatabaseManager.swift in Sources */,
@@ -1102,6 +1132,7 @@
 				949AD0F62B2D9CAA00776787 /* MainViewController.swift in Sources */,
 				949447722B0E1CA500C644E4 /* AppDelegate.swift in Sources */,
 				AE99E69A2B6910A700689DE9 /* ImageUploadUsingPicker.swift in Sources */,
+				AE9E500C2B89BE0100D4F873 /* InitialCallViewController.swift in Sources */,
 				94E9D4B22B0F7730007D93D8 /* UpdateViewController.swift in Sources */,
 				943A25BC2B0F1BC1006E0B7A /* AllModel.swift in Sources */,
 				94A6F1012B18A88600FA11D8 /* ProfileViewController.swift in Sources */,
@@ -1116,6 +1147,7 @@
 				AEB21F002B88BF0800947659 /* ChipotleOnBoardingMainViewController.swift in Sources */,
 				94F669642B3AD78F00F2E333 /* SMSViewController.swift in Sources */,
 				949AD0F82B2D9CF500776787 /* TabPageViewController.swift in Sources */,
+				AE9E50102B89C1F600D4F873 /* Utility.swift in Sources */,
 				AEB8DE722B4E9155005439D4 /* ActivityIndicator.swift in Sources */,
 				94F669622B3AD77C00F2E333 /* PhoneViewController.swift in Sources */,
 				AEB21F212B88C21100947659 /* ChipotleOrderViewController.swift in Sources */,
