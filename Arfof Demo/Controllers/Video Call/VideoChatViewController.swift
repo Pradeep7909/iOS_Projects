@@ -31,9 +31,10 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     var user : Int = 2
     
     var screenWidth : CGFloat = 300
-    var screenHeight : CGFloat = 400
+    var screenHeight : CGFloat = 600
     var safeAreaTopHeight : CGFloat = 40
     var callConnected : Bool = false
+    var isAudioMuted : Bool = false
     
     
     //MARK: IBOutlets
@@ -47,7 +48,8 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     
     @IBOutlet weak var callImage: UIImageView!
     @IBOutlet weak var callImageView: CustomView!
-    
+    @IBOutlet weak var muteButtonImage: UIImageView!
+    @IBOutlet weak var videoButtonImage: UIImageView!
     
     
     //MARK: View Cycle
@@ -57,21 +59,18 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
         
         initializeView()
         self.remoteVideoView.delegate = self
-        // RTCPeerConnectionFactory
         
         self.peerConnectionFactory = RTCPeerConnectionFactory()
         self.startVideo(camera: .front)
         self.setupFirebase()
+        peerConnection = prepareNewConnection()
     }
-    
-    
     
     //MARK: IBActions
     @IBAction func closeButtonAction(_ sender: Any) {
         hangUp()
         self.navigationController?.popViewController(animated: true)
     }
-    
     
     @IBAction func connectButtonAction(_ sender: Any) {
         
@@ -80,11 +79,11 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
             hangUp()
         }else{
             print("connectButtonAction")
-            if peerConnection == nil {
+            if !callConnected {
                 LOG("make Offer")
                 makeOffer()
             } else {
-                LOG("peer already exist.")
+                LOG("call already connected.")
             }
         }
     }
@@ -126,21 +125,34 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     
     @IBAction func muteButton(_ sender: Any) {
         
-        guard let localAudioTrack = peerConnection?.localStreams.first?.audioTracks.first else {
-            print("Local audio track not found.")
-            return
-        }
-        
-        // Toggle the enabled state of the local audio track
-        localAudioTrack.isEnabled = !localAudioTrack.isEnabled
-        
-        // Update UI or perform any other actions based on mute/unmute state
-        if localAudioTrack.isEnabled {
-            print("Audio unmuted.")
+        // Mute/unmute audio tracks
+        if let localStream = peerConnection?.localStreams.first {
+            for track in localStream.audioTracks {
+                isAudioMuted = !isAudioMuted
+                track.isEnabled = !isAudioMuted
+                print("Audio \(isAudioMuted ? "muted" : "unmuted")")
+                muteButtonImage.image = UIImage(named: isAudioMuted ? "mute" : "mic")
+            }
         } else {
-            print("Audio muted.")
+            print("Error: No local stream found or no audio tracks in the local stream.")
+            
         }
         
+    }
+    
+    @IBAction func stopVideoShare(_ sender: Any) {
+        // Toggle the video track's enabled state
+        if let localStream = peerConnection?.localStreams.first {
+            if let videoTrack = localStream.videoTracks.first {
+                videoTrack.isEnabled = !videoTrack.isEnabled
+                print("Video sharing \(videoTrack.isEnabled ? "resumed" : "paused")")
+                videoButtonImage.image = UIImage(named: videoTrack.isEnabled ? "videoOn" : "videoOff")
+            } else {
+                print("Error: No video track in the local stream.")
+            }
+        } else {
+            print("Error: No local stream found.")
+        }
     }
     
     
@@ -157,6 +169,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
         setCameraPreviewFullScreen()
     }
     
+    //When call is not connected
     func setCameraPreviewFullScreen() {
         DispatchQueue.main.async {
             self.cameraPreviewTopConstraint.constant = -self.safeAreaTopHeight
@@ -171,6 +184,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
             self.view.layoutIfNeeded()
         }
     }
+    //When call is connected
     func setCameraPreviewSmall(){
         DispatchQueue.main.async {
             UIView.animate(withDuration: 0.5) {
@@ -189,7 +203,6 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     }
     
     func setupFirebase() {
-        
         self.observerSignalRef = Database.database().reference().child("Call/\(receiver)")
         self.offerSignalRef = Database.database().reference().child("Call/\(sender)")
         
@@ -199,19 +212,10 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     }
     
     
-    
     func observerSingnal() {
-        
         self.observerSignalRef?.observe(.value, with: { [weak self] (snapshot) in
-            
             guard snapshot.exists() else { return }
             LOG("message: \(snapshot.value ?? "NO Value")")
-            if self?.peerConnection == nil {
-                print("peerconnection setted")
-                self?.peerConnection = self?.prepareNewConnection()
-            }else{
-                print("peeconnection already setted")
-            }
             
             let jsonMessage = JSON(snapshot.value!)
             let type = jsonMessage["type"].stringValue
@@ -250,6 +254,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     }
     
     
+    //Start Capturing video
     func startVideo(camera : AVCaptureDevice.Position) {
         let audioSourceConstraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
         audioSource = peerConnectionFactory.audioSource(with: audioSourceConstraints)
@@ -259,8 +264,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
         print("Video source: \(videoSource)")
         
         self.videoCapturer = RTCCameraVideoCapturer(delegate: videoSource)
-        
-        
+
         // Start the capture session of the videoCapturer
         if let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: camera) {
             let format = RTCCameraVideoCapturer.supportedFormats(for: camera).first
@@ -269,11 +273,6 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
             videoCapturer!.startCapture(with: camera,
                                         format: format!,
                                         fps: Int(fps)) { error in
-                if error != nil {
-                    print("Error starting video capture: \(error.localizedDescription)")
-                }
-                
-                // Assign the capture session to the cameraPreview
                 DispatchQueue.main.async {
                     print("displaying video..")
                     self.cameraPreview.captureSession = self.videoCapturer?.captureSession
@@ -289,71 +288,54 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     
     
     func prepareNewConnection() -> RTCPeerConnection {
-        // STUN/TURN
         let configuration = RTCConfiguration()
         configuration.iceServers = [RTCIceServer.init(urlStrings: ["stun:stun.l.google.com:19302",
                                                                    "stun:stun2.l.google.com:19302",
                                                                    "stun:stun3.l.google.com:19302",
                                                                    "stun:stun4.l.google.com:19302"])]
-        
-        // PeerConecction
+
         let peerConnectionConstraints = RTCMediaConstraints(
             mandatoryConstraints: nil, optionalConstraints: nil)
-        // PeerConnection
-        let peerConnection = peerConnectionFactory.peerConnection(with: configuration, constraints: peerConnectionConstraints, delegate: self)
         
-        let localAudioTrack = peerConnectionFactory.audioTrack(with: audioSource!, trackId: sender == 1 ? "ARDAMSa0" : "ARDAMSa1" )
-        // PeerConnectionSender
-        let audioSender = peerConnection.sender(withKind: kRTCMediaStreamTrackKindAudio, streamId: sender == 1 ? "ARDAMS0" : "ARDAMS1")
-        // Sender
-        audioSender.track = localAudioTrack
-        
-        
-        let localVideoTrack = peerConnectionFactory.videoTrack(with: videoSource!, trackId: sender == 1 ? "ARDAMSv0" : "ARDAMSv1")
-        // PeerConnection VideoSender
-        let videoSender = peerConnection.sender(withKind: kRTCMediaStreamTrackKindVideo, streamId:  sender == 1 ? "ARDAMS0" :  "ARDAMS1")
-        // Sender
-        videoSender.track = localVideoTrack
+        let peerConnection = peerConnectionFactory.peerConnection(
+            with: configuration,
+            constraints: peerConnectionConstraints,
+            delegate: self)
+
+        let localStream = peerConnectionFactory.mediaStream(withStreamId: "VideoCall")
+        let localAudioTrack = peerConnectionFactory.audioTrack(with: audioSource!, trackId: "audio" + "\(user)" )
+        let localVideoTrack = peerConnectionFactory.videoTrack(with: videoSource!, trackId: "video" + "\(user)")
+        localStream.addAudioTrack(localAudioTrack)
+        localStream.addVideoTrack(localVideoTrack)
+
+        peerConnection.add(localStream)
         
         return peerConnection
     }
     
     
-    
     //MARK: Signal Transfer
     func makeOffer() {
-        
-        peerConnection = prepareNewConnection() // PeerConnection
-        
-        let constraints = RTCMediaConstraints(mandatoryConstraints: ["OfferToReceiveAudio": "true", "OfferToReceiveVideo": "true"],
-                                              optionalConstraints: nil) // Offer
+        let constraints = RTCMediaConstraints(mandatoryConstraints: ["OfferToReceiveAudio": "true", "OfferToReceiveVideo": "true"],optionalConstraints: nil) // Offer
         let offerCompletion = { (offer: RTCSessionDescription?, error: Error?) in // Offer
-            
-            if error != nil { return }
+            if error != nil {
+                LOG("error \(String(describing: error))")
+                return }
             LOG("createOffer() succsess")
             let setLocalDescCompletion = {(error: Error?) in // setLocalDescCompletion
                 
                 if error != nil { return }
                 LOG("setLocalDescription() succsess")
-                
                 self.sendSDP(offer!)
             }
-            
             self.peerConnection.setLocalDescription(offer!, completionHandler: setLocalDescCompletion)
         }
-        
-        
         self.peerConnection.offer(for: constraints, completionHandler: offerCompletion) // Offer
     }
     
-    
     func makeAnswer() {
         LOG("sending Answer. Creating remote session description...")
-        if peerConnection == nil {
-            LOG("peerConnection NOT exist!")
-            return
-        }
-        
+    
         let constraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
         let answerCompletion = { (answer: RTCSessionDescription?, error: Error?) in
             if error != nil { return }
@@ -366,7 +348,6 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
             }
             self.peerConnection.setLocalDescription(answer!, completionHandler: setLocalDescCompletion)
         }
-        
         self.peerConnection.answer(for: constraints, completionHandler: answerCompletion) // Answer
     }
     
@@ -387,13 +368,8 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
         }
     }
     
-    
     func setOffer(_ offer: RTCSessionDescription) {
-        if peerConnection != nil {
-            LOG("peerConnection alreay exist!")
-        }
-        
-        peerConnection = prepareNewConnection() // PeerConnection
+         // PeerConnection
         self.peerConnection.setRemoteDescription(offer, completionHandler: {(error: Error?) in
             if error == nil {
                 LOG("setRemoteDescription(offer) succsess")
@@ -404,13 +380,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
         })
     }
     
-    
     func setAnswer(_ answer: RTCSessionDescription) {
-        if peerConnection == nil {
-            LOG("peerConnection NOT exist!")
-            return
-        }
-        
         self.peerConnection.setRemoteDescription(answer, completionHandler: {
             (error: Error?) in
             if error == nil {
@@ -421,16 +391,13 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
         })
     }
     
-    
     func addIceCandidate(_ candidate: RTCIceCandidate) {
-        
         print("candidate is added.")
         peerConnection.add(candidate)
     }
     
-    
     func hangUp() {
-        if peerConnection != nil {
+        if callConnected == true {
             if peerConnection.iceConnectionState != RTCIceConnectionState.closed {
                 peerConnection.close()
                 let jsonClose: JSON = ["type": "close"]
@@ -441,39 +408,32 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
                 ref.setValue(message) { (error, ref) in
                     print("Dang send SDP Error -->> ", error.debugDescription)
                 }
-                
             }
             if remoteVideoTrack != nil {
                 remoteVideoTrack?.remove(remoteVideoView)
             }
             
             remoteVideoTrack = nil
-            peerConnection = nil
-            LOG("peerConnection is closed.")
+            callConnected = false
+            LOG("Call is closed.")
             setCameraPreviewFullScreen()
+            peerConnection = prepareNewConnection()
         }
     }
-    
     
     func videoView(_ videoView: RTCVideoRenderer, didChangeVideoSize size: CGSize) {
         print("Remote video render on screen")
         setCameraPreviewSmall()
     }
-    
 }
-
-
 
 // MARK: - Peer Connection
 extension VideoChatViewController: RTCPeerConnectionDelegate {
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState) {
-        
         print("\(#function): called.")
-        
     }
-    
-    
+
     func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream) {
         LOG("-- peer.onaddstream()")
         DispatchQueue.main.async(execute: { () -> Void in
@@ -486,18 +446,15 @@ extension VideoChatViewController: RTCPeerConnectionDelegate {
             }
         })
     }
-    
-    
+
     func peerConnection(_ peerConnection: RTCPeerConnection, didRemove stream: RTCMediaStream) {
         LOG("didRemove")
     }
-    
-    
+
     func peerConnectionShouldNegotiate(_ peerConnection: RTCPeerConnection) {
         LOG("peerConnectionShouldNegotiate")
     }
-    
-    
+
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState) {
         LOG("didChange")
         var state = ""
@@ -516,13 +473,11 @@ extension VideoChatViewController: RTCPeerConnectionDelegate {
         }
         LOG("ICE connection Status has changed to \(state)")
     }
-    
-    
+
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceGatheringState) {
         LOG("didChange")
     }
-    
-    
+
     func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
         LOG("didGenerate")
         if candidate.sdpMid != nil {
@@ -531,8 +486,7 @@ extension VideoChatViewController: RTCPeerConnectionDelegate {
             LOG("empty ice event")
         }
     }
-    
-    
+
     func sendIceCandidate(_ candidate: RTCIceCandidate) {
         LOG("---sending ICE candidate ---")
         let jsonCandidate: JSON = ["type": "candidate",
@@ -551,15 +505,12 @@ extension VideoChatViewController: RTCPeerConnectionDelegate {
             }
         }
     }
-    
-    
+
     func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
         LOG("didOpen")
     }
-    
-    
+
     func peerConnection(_ peerConnection: RTCPeerConnection, didRemove candidates: [RTCIceCandidate]) {
         LOG("didRemove")
     }
-    
 }

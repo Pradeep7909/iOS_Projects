@@ -14372,7 +14372,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="YN5-eE-FXJ">
-                                <rect key="frame" x="130" y="660" width="130" height="50"/>
+                                <rect key="frame" x="90" y="660" width="210" height="50"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mZ9-g5-Zbf" customClass="CustomView" customModule="Arfof_Demo" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
@@ -14415,7 +14415,7 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fQO-ud-7M8" customClass="CustomView" customModule="Arfof_Demo" customModuleProvider="target">
                                         <rect key="frame" x="80" y="0.0" width="50" height="50"/>
                                         <subviews>
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mute" translatesAutoresizingMaskIntoConstraints="NO" id="XbH-x5-A6K">
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mic" translatesAutoresizingMaskIntoConstraints="NO" id="XbH-x5-A6K">
                                                 <rect key="frame" x="10" y="10" width="30" height="30"/>
                                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </imageView>
@@ -14442,6 +14442,43 @@
                                             <constraint firstAttribute="height" constant="50" id="ZU6-3y-RwC"/>
                                             <constraint firstItem="XbH-x5-A6K" firstAttribute="leading" secondItem="fQO-ud-7M8" secondAttribute="leading" constant="10" id="ePV-dG-Ohu"/>
                                             <constraint firstItem="frc-iP-mm4" firstAttribute="top" secondItem="fQO-ud-7M8" secondAttribute="top" id="tug-be-cIC"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="25"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7ca-mv-cru" customClass="CustomView" customModule="Arfof_Demo" customModuleProvider="target">
+                                        <rect key="frame" x="160" y="0.0" width="50" height="50"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="videoOn" translatesAutoresizingMaskIntoConstraints="NO" id="VKm-zo-vfM">
+                                                <rect key="frame" x="10" y="10" width="30" height="30"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </imageView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SPf-u9-Xs1" userLabel="flipButton">
+                                                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="camera"/>
+                                                <connections>
+                                                    <action selector="stopVideoShare:" destination="26l-jm-Lm1" eventType="touchUpInside" id="1pp-z0-7va"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.66666666669999997" alpha="0.5" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="50" id="0Tt-qn-7Xy"/>
+                                            <constraint firstAttribute="trailing" secondItem="SPf-u9-Xs1" secondAttribute="trailing" id="2CT-Sh-71v"/>
+                                            <constraint firstAttribute="trailing" secondItem="VKm-zo-vfM" secondAttribute="trailing" constant="10" id="DBu-NX-Y8E"/>
+                                            <constraint firstItem="SPf-u9-Xs1" firstAttribute="top" secondItem="7ca-mv-cru" secondAttribute="top" id="P9L-6S-eGO"/>
+                                            <constraint firstItem="VKm-zo-vfM" firstAttribute="top" secondItem="7ca-mv-cru" secondAttribute="top" constant="10" id="ViI-2y-ikK"/>
+                                            <constraint firstAttribute="bottom" secondItem="SPf-u9-Xs1" secondAttribute="bottom" id="aC0-Ao-bZy"/>
+                                            <constraint firstItem="VKm-zo-vfM" firstAttribute="leading" secondItem="7ca-mv-cru" secondAttribute="leading" constant="10" id="gKG-4e-0sV"/>
+                                            <constraint firstAttribute="height" constant="50" id="kGr-VS-W0b"/>
+                                            <constraint firstItem="SPf-u9-Xs1" firstAttribute="leading" secondItem="7ca-mv-cru" secondAttribute="leading" id="qNr-BD-YZq"/>
+                                            <constraint firstAttribute="bottom" secondItem="VKm-zo-vfM" secondAttribute="bottom" constant="10" id="trV-wq-2K0"/>
                                         </constraints>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -14514,12 +14551,14 @@
                         <outlet property="cameraPreviewTopConstraint" destination="BgE-uL-7Kd" id="2MD-Qr-rdP"/>
                         <outlet property="cameraPreviewTralingConstraint" destination="oIm-3j-Rfo" id="1sh-Ms-Xxe"/>
                         <outlet property="cameraPreviewWidth" destination="L1O-L5-T7m" id="LVS-0y-eZf"/>
+                        <outlet property="muteButtonImage" destination="XbH-x5-A6K" id="9w0-zy-evx"/>
                         <outlet property="remoteVideoView" destination="HVC-VS-tWC" id="IbC-MO-SXY"/>
+                        <outlet property="videoButtonImage" destination="VKm-zo-vfM" id="hGV-1K-PYw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5sU-XG-Jju" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="890.76923076923072" y="7001.658767772512"/>
+            <point key="canvasLocation" x="1015" y="7002"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="jKW-ae-U8r">
@@ -14701,9 +14740,9 @@
         <image name="logoLinkedin" width="512" height="512"/>
         <image name="logoTwitter" width="307" height="305"/>
         <image name="message" width="80" height="80"/>
+        <image name="mic" width="302" height="454"/>
         <image name="minus" catalog="system" width="128" height="26"/>
         <image name="mountain_view" width="1340" height="640"/>
-        <image name="mute" width="512" height="512"/>
         <image name="newOrder" width="68" height="68"/>
         <image name="notification" width="68" height="68"/>
         <image name="order" width="36" height="38"/>
@@ -14735,6 +14774,7 @@
         <image name="star.fill" catalog="system" width="128" height="116"/>
         <image name="stopwatch" catalog="system" width="121" height="128"/>
         <image name="tick_back" width="64" height="64"/>
+        <image name="videoOn" width="512" height="512"/>
         <image name="wall1" width="335" height="191"/>
         <image name="wall2" width="1002" height="684"/>
         <image name="wall5" width="1152" height="674"/>

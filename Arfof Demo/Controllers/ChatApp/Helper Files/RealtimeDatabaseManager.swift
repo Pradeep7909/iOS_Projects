@@ -72,6 +72,15 @@ func setOnlineStatus(isOnline: Bool) {
         let userRef = Database.database().reference().child("users").child(uid)
         userRef.child("isOnline").setValue(isOnline)
         
+        // Set isOnline to false when the user disconnects
+        userRef.onDisconnectSetValue(false, withCompletionBlock: { error, _ in
+            if let error = error {
+                print("Error setting value on disconnect: \(error.localizedDescription)")
+            } else {
+                print("Value set on disconnect")
+            }
+        })
+        
         // If the user is online, update the last seen timestamp
         if isOnline {
             userRef.child("lastSeen").setValue(ServerValue.timestamp())
