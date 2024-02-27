@@ -8,5 +8,8 @@
 import Foundation
 
 func LOG(_ body: String = "", function: String = #function, line: Int = #line) {
-    print("[\(function) : \(line)] \(body)")
+//    print("[\(function) : \(line)] \(body)")
+    print("\(line) : \(body)")
 }
+
+

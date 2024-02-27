@@ -12,29 +12,28 @@ import Firebase
 
 class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
     
-    
     //MARK: Variables
-    var peerConnectionFactory: RTCPeerConnectionFactory! = nil
-    var peerConnection: RTCPeerConnection! = nil
-    var remoteVideoTrack: RTCVideoTrack?
-    var audioSource: RTCAudioSource?
-    var videoSource: RTCVideoSource?
-    var videoCapturer: RTCCameraVideoCapturer?
+    private var peerConnectionFactory: RTCPeerConnectionFactory! = nil
+    private var peerConnection: RTCPeerConnection! = nil
+    private var remoteVideoTrack: RTCVideoTrack?
+    private var audioSource: RTCAudioSource?
+    private var videoSource: RTCVideoSource?
+    private var videoCapturer: RTCCameraVideoCapturer?
     
-    var observerSignalRef: DatabaseReference?
-    var offerSignalRef: DatabaseReference?
+    private var observerSignalRef: DatabaseReference?
+    private var offerSignalRef: DatabaseReference?
     
-    var isUsingFrontCamera = true
+    private var isUsingFrontCamera = true
     
-    var sender: Int = 1
-    var receiver: Int = 2
+    private var sender: Int = 1
+    private var receiver: Int = 2
     var user : Int = 2
     
-    var screenWidth : CGFloat = 300
-    var screenHeight : CGFloat = 600
-    var safeAreaTopHeight : CGFloat = 40
-    var callConnected : Bool = false
-    var isAudioMuted : Bool = false
+    private var screenWidth : CGFloat = 300
+    private var screenHeight : CGFloat = 600
+    private var safeAreaTopHeight : CGFloat = 40
+    private var callConnected : Bool = false
+    private var isAudioMuted : Bool = false
     
     
     //MARK: IBOutlets
@@ -75,10 +74,10 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     @IBAction func connectButtonAction(_ sender: Any) {
         
         if callConnected {
-            print("hangupButtonAction")
+            LOG("hangupButtonAction")
             hangUp()
         }else{
-            print("connectButtonAction")
+            LOG("connectButtonAction")
             if !callConnected {
                 LOG("make Offer")
                 makeOffer()
@@ -94,11 +93,11 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
         let newPosition: AVCaptureDevice.Position = (isUsingFrontCamera) ? .back : .front
         
         guard let activeDevice = videoCapturer?.captureSession.inputs.first as? AVCaptureDeviceInput else {
-            print("No active capture device found.")
+            LOG("No active capture device found.")
             return
         }
         guard let newDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: newPosition) else {
-            print("No \(newPosition) camera available.")
+            LOG("No \(newPosition) camera available.")
             return
         }
         
@@ -111,33 +110,30 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
             if videoCapturer?.captureSession.canAddInput(newInput) == true {
                 videoCapturer?.captureSession.addInput(newInput)
             } else {
-                print("Failed to add new input to capture session.")
+                LOG("Failed to add new input to capture session.")
             }
             
             // Commit the configuration session
             videoCapturer?.captureSession.commitConfiguration()
         } catch {
-            print("Error creating capture device input: \(error.localizedDescription)")
+            LOG("Error creating capture device input: \(error.localizedDescription)")
         }
         isUsingFrontCamera.toggle()
     }
     
     
     @IBAction func muteButton(_ sender: Any) {
-        
-        // Mute/unmute audio tracks
         if let localStream = peerConnection?.localStreams.first {
             for track in localStream.audioTracks {
                 isAudioMuted = !isAudioMuted
                 track.isEnabled = !isAudioMuted
-                print("Audio \(isAudioMuted ? "muted" : "unmuted")")
+                LOG("Audio \(isAudioMuted ? "muted" : "unmuted")")
                 muteButtonImage.image = UIImage(named: isAudioMuted ? "mute" : "mic")
             }
         } else {
-            print("Error: No local stream found or no audio tracks in the local stream.")
+            LOG("Error: No local stream found or no audio tracks in the local stream.")
             
         }
-        
     }
     
     @IBAction func stopVideoShare(_ sender: Any) {
@@ -145,13 +141,13 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
         if let localStream = peerConnection?.localStreams.first {
             if let videoTrack = localStream.videoTracks.first {
                 videoTrack.isEnabled = !videoTrack.isEnabled
-                print("Video sharing \(videoTrack.isEnabled ? "resumed" : "paused")")
+                LOG("Video sharing \(videoTrack.isEnabled ? "resumed" : "paused")")
                 videoButtonImage.image = UIImage(named: videoTrack.isEnabled ? "videoOn" : "videoOff")
             } else {
-                print("Error: No video track in the local stream.")
+                LOG("Error: No video track in the local stream.")
             }
         } else {
-            print("Error: No local stream found.")
+            LOG("Error: No local stream found.")
         }
     }
     
@@ -261,7 +257,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
         
         let videoSource = peerConnectionFactory.videoSource()
         self.videoSource = videoSource
-        print("Video source: \(videoSource)")
+        LOG("Video source: \(videoSource)")
         
         self.videoCapturer = RTCCameraVideoCapturer(delegate: videoSource)
 
@@ -274,7 +270,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
                                         format: format!,
                                         fps: Int(fps)) { error in
                 DispatchQueue.main.async {
-                    print("displaying video..")
+                    LOG("displaying video")
                     self.cameraPreview.captureSession = self.videoCapturer?.captureSession
                     if let previewLayer = self.cameraPreview.layer as? AVCaptureVideoPreviewLayer {
                         previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
@@ -282,10 +278,9 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
                 }
             }
         } else {
-            print("Front camera not available")
+            LOG("camera not available")
         }
     }
-    
     
     func prepareNewConnection() -> RTCPeerConnection {
         let configuration = RTCConfiguration()
@@ -360,16 +355,14 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
             "type": RTCSessionDescription.string(for: desc.type) // offer  answer
         ]
         let message = jsonSdp.dictionaryObject
-        
         self.offerSignalRef?.setValue(message) { (error, ref) in
             if error != nil {
-                print("Dang sendIceCandidate -->> ", error.debugDescription)
+                LOG("Dang sendIceCandidate -->> , \(error.debugDescription) ")
             }
         }
     }
     
     func setOffer(_ offer: RTCSessionDescription) {
-         // PeerConnection
         self.peerConnection.setRemoteDescription(offer, completionHandler: {(error: Error?) in
             if error == nil {
                 LOG("setRemoteDescription(offer) succsess")
@@ -392,7 +385,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     }
     
     func addIceCandidate(_ candidate: RTCIceCandidate) {
-        print("candidate is added.")
+        LOG("candidate is added.")
         peerConnection.add(candidate)
     }
     
@@ -406,13 +399,12 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
                 LOG("sending close message")
                 let ref = Database.database().reference().child("Call/\(sender)")
                 ref.setValue(message) { (error, ref) in
-                    print("Dang send SDP Error -->> ", error.debugDescription)
+                    LOG("Dang send SDP Error -->>  \( error.debugDescription) ")
                 }
             }
             if remoteVideoTrack != nil {
                 remoteVideoTrack?.remove(remoteVideoView)
             }
-            
             remoteVideoTrack = nil
             callConnected = false
             LOG("Call is closed.")
@@ -422,7 +414,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     }
     
     func videoView(_ videoView: RTCVideoRenderer, didChangeVideoSize size: CGSize) {
-        print("Remote video render on screen")
+        LOG("Remote video render on screen")
         setCameraPreviewSmall()
     }
 }
@@ -431,7 +423,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
 extension VideoChatViewController: RTCPeerConnectionDelegate {
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState) {
-        print("\(#function): called.")
+        LOG("\(#function): called.")
     }
 
     func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream) {
@@ -442,7 +434,7 @@ extension VideoChatViewController: RTCPeerConnectionDelegate {
                 self.remoteVideoTrack = stream.videoTracks[0]
                 // remoteVideoView
                 self.remoteVideoTrack?.add(self.remoteVideoView)
-                print("video is added to remote video..")
+                LOG("video is added to remote video..")
             }
         })
     }
@@ -501,7 +493,7 @@ extension VideoChatViewController: RTCPeerConnectionDelegate {
         
         self.offerSignalRef?.setValue(message) { (error, ref) in
             if error != nil {
-                print("Dang sendIceCandidate -->> ", error.debugDescription)
+                LOG("Dang sendIceCandidate -->> , \(error.debugDescription)")
             }
         }
     }

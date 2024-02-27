@@ -14266,6 +14266,16 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="checkMarkEnabled" value="NO"/>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="selectedRowColor">
+                                        <color key="value" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="rowHeight">
+                                        <integer key="value" value="40"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isSearchEnable" value="NO"/>
+                                </userDefinedRuntimeAttributes>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="select a user." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="43k-df-pWq">
                                 <rect key="frame" x="95" y="211" width="100.66666666666669" height="21"/>
@@ -14316,10 +14326,24 @@
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lI6-Ll-nyT" userLabel="Local Video View" customClass="RTCCameraPreviewView">
                                 <rect key="frame" x="270" y="67" width="100" height="120"/>
+                                <subviews>
+                                    <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d1g-hS-Y2r">
+                                        <rect key="frame" x="0.0" y="0.0" width="100" height="120"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="W0g-jl-ltp">
+                                            <rect key="frame" x="0.0" y="0.0" width="100" height="120"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        </view>
+                                        <blurEffect style="regular"/>
+                                    </visualEffectView>
+                                </subviews>
                                 <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="100" id="L1O-L5-T7m"/>
+                                    <constraint firstItem="d1g-hS-Y2r" firstAttribute="top" secondItem="lI6-Ll-nyT" secondAttribute="top" id="NIt-K5-NjD"/>
+                                    <constraint firstItem="d1g-hS-Y2r" firstAttribute="leading" secondItem="lI6-Ll-nyT" secondAttribute="leading" id="XsI-Fn-7xL"/>
                                     <constraint firstAttribute="height" constant="120" id="cS1-Em-ErV"/>
+                                    <constraint firstAttribute="trailing" secondItem="d1g-hS-Y2r" secondAttribute="trailing" id="p1V-pC-1U6"/>
+                                    <constraint firstAttribute="bottom" secondItem="d1g-hS-Y2r" secondAttribute="bottom" id="zWo-sY-eMO"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KqQ-Ba-6D0" customClass="CustomViewShadow" customModule="Arfof_Demo" customModuleProvider="target">
