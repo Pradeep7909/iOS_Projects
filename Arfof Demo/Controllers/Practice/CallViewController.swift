@@ -23,7 +23,7 @@ class CallViewController: UIViewController {
     var peerConnection: RTCPeerConnection?
     var localStream: RTCMediaStream?
     var factory: RTCPeerConnectionFactory!
-    var videoSource: RTCVideoSource?
+//    var videoSource: RTCVideoSource?
     
     
     var remoteVideoView: RTCMTLVideoView? // Added

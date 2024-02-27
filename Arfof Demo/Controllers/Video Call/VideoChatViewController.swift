@@ -12,12 +12,14 @@ import Firebase
 
 class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
     
+    
+    //MARK: Variables
     var peerConnectionFactory: RTCPeerConnectionFactory! = nil
     var peerConnection: RTCPeerConnection! = nil
     var remoteVideoTrack: RTCVideoTrack?
     var audioSource: RTCAudioSource?
     var videoSource: RTCVideoSource?
-    var videoCapturer: RTCVideoCapturer?
+    var videoCapturer: RTCCameraVideoCapturer?
     
     var observerSignalRef: DatabaseReference?
     var offerSignalRef: DatabaseReference?
@@ -34,6 +36,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     var callConnected : Bool = false
     
     
+    //MARK: IBOutlets
     @IBOutlet weak var cameraPreview: RTCCameraPreviewView!
     @IBOutlet weak var remoteVideoView: RTCMTLVideoView!
     
@@ -47,11 +50,11 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     
     
     
-    
+    //MARK: View Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         LOG("viewDidLoad")
-
+        
         initializeView()
         self.remoteVideoView.delegate = self
         // RTCPeerConnectionFactory
@@ -62,14 +65,16 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     }
     
     
+    
+    //MARK: IBActions
     @IBAction func closeButtonAction(_ sender: Any) {
         hangUp()
         self.navigationController?.popViewController(animated: true)
     }
-
+    
     
     @IBAction func connectButtonAction(_ sender: Any) {
-       
+        
         if callConnected {
             print("hangupButtonAction")
             hangUp()
@@ -87,11 +92,33 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     
     @IBAction func flipCamera(_ sender: Any) {
         
-        if isUsingFrontCamera {
-            self.startVideo(camera: .back)
+        let newPosition: AVCaptureDevice.Position = (isUsingFrontCamera) ? .back : .front
+        
+        guard let activeDevice = videoCapturer?.captureSession.inputs.first as? AVCaptureDeviceInput else {
+            print("No active capture device found.")
+            return
         }
-        else{
-            self.startVideo(camera: .front)
+        guard let newDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: newPosition) else {
+            print("No \(newPosition) camera available.")
+            return
+        }
+        
+        do {
+            let newInput = try AVCaptureDeviceInput(device: newDevice)
+            videoCapturer?.captureSession.beginConfiguration()
+            videoCapturer?.captureSession.removeInput(activeDevice)
+            
+            // Add the new input to the capture session
+            if videoCapturer?.captureSession.canAddInput(newInput) == true {
+                videoCapturer?.captureSession.addInput(newInput)
+            } else {
+                print("Failed to add new input to capture session.")
+            }
+            
+            // Commit the configuration session
+            videoCapturer?.captureSession.commitConfiguration()
+        } catch {
+            print("Error creating capture device input: \(error.localizedDescription)")
         }
         isUsingFrontCamera.toggle()
     }
@@ -117,6 +144,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     }
     
     
+    //MARK: Fucntions
     func initializeView(){
         sender =  user
         receiver =  user == 1 ? 2 : 1
@@ -125,7 +153,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
         safeAreaTopHeight = self.view.safeAreaInsets.top
         cameraPreview.backgroundColor = .clear
         remoteVideoView.backgroundColor = .clear
-        self.view.backgroundColor = .clear
+        self.view.backgroundColor = .black
         setCameraPreviewFullScreen()
     }
     
@@ -135,6 +163,10 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
             self.cameraPreviewTralingConstraint.constant = 0
             self.cameraPreviewWidth.constant = self.screenWidth
             self.cameraPreviewHeight.constant = self.screenHeight
+            self.callImage.image = UIImage(named: "callRing")
+            self.callImageView.backgroundColor = .green
+            self.remoteVideoView.isHidden = true
+            self.callConnected = false
             
             self.view.layoutIfNeeded()
         }
@@ -146,6 +178,12 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
                 self.cameraPreviewTralingConstraint.constant = 20
                 self.cameraPreviewWidth.constant = 100
                 self.cameraPreviewHeight.constant = 120
+                self.callImage.image = UIImage(named: "callEnd")
+                self.callImageView.backgroundColor = .red
+                self.remoteVideoView.isHidden = false
+                self.callConnected = true
+               
+                self.view.layoutIfNeeded()
             }
         }
     }
@@ -159,7 +197,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
         self.observerSingnal()
         
     }
-
+    
     
     
     func observerSingnal() {
@@ -210,7 +248,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
             }
         })
     }
-
+    
     
     func startVideo(camera : AVCaptureDevice.Position) {
         let audioSourceConstraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
@@ -220,18 +258,17 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
         self.videoSource = videoSource
         print("Video source: \(videoSource)")
         
-        let videoCapturer = RTCCameraVideoCapturer(delegate: videoSource)
-        self.videoCapturer = videoCapturer
+        self.videoCapturer = RTCCameraVideoCapturer(delegate: videoSource)
         
         
         // Start the capture session of the videoCapturer
-        if let frontCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: camera) {
-            let format = RTCCameraVideoCapturer.supportedFormats(for: frontCamera).first
+        if let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: camera) {
+            let format = RTCCameraVideoCapturer.supportedFormats(for: camera).first
             let fps = format?.videoSupportedFrameRateRanges.first?.maxFrameRate ?? 30
             
-            videoCapturer.startCapture(with: frontCamera,
-                                       format: format!,
-                                       fps: Int(fps)) { error in
+            videoCapturer!.startCapture(with: camera,
+                                        format: format!,
+                                        fps: Int(fps)) { error in
                 if error != nil {
                     print("Error starting video capture: \(error.localizedDescription)")
                 }
@@ -239,7 +276,10 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
                 // Assign the capture session to the cameraPreview
                 DispatchQueue.main.async {
                     print("displaying video..")
-                    self.cameraPreview.captureSession = videoCapturer.captureSession
+                    self.cameraPreview.captureSession = self.videoCapturer?.captureSession
+                    if let previewLayer = self.cameraPreview.layer as? AVCaptureVideoPreviewLayer {
+                        previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+                    }
                 }
             }
         } else {
@@ -279,6 +319,8 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     }
     
     
+    
+    //MARK: Signal Transfer
     func makeOffer() {
         
         peerConnection = prepareNewConnection() // PeerConnection
@@ -337,7 +379,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
             "type": RTCSessionDescription.string(for: desc.type) // offer  answer
         ]
         let message = jsonSdp.dictionaryObject
-
+        
         self.offerSignalRef?.setValue(message) { (error, ref) in
             if error != nil {
                 print("Dang sendIceCandidate -->> ", error.debugDescription)
@@ -414,17 +456,17 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     
     
     func videoView(_ videoView: RTCVideoRenderer, didChangeVideoSize size: CGSize) {
-        print("video call does wpork")
+        print("Remote video render on screen")
         setCameraPreviewSmall()
     }
-
+    
 }
 
 
 
 // MARK: - Peer Connection
 extension VideoChatViewController: RTCPeerConnectionDelegate {
-
+    
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState) {
         
         print("\(#function): called.")
@@ -494,13 +536,13 @@ extension VideoChatViewController: RTCPeerConnectionDelegate {
     func sendIceCandidate(_ candidate: RTCIceCandidate) {
         LOG("---sending ICE candidate ---")
         let jsonCandidate: JSON = ["type": "candidate",
-                                    "ice": [
-                                        "candidate": candidate.sdp,
-                                        "sdpMLineIndex": candidate.sdpMLineIndex,
-                                        "sdpMid": candidate.sdpMid!
-                                        ]
-                                    ]
-
+                                   "ice": [
+                                    "candidate": candidate.sdp,
+                                    "sdpMLineIndex": candidate.sdpMLineIndex,
+                                    "sdpMid": candidate.sdpMid!
+                                   ]
+        ]
+        
         let message = jsonCandidate.dictionaryObject
         
         self.offerSignalRef?.setValue(message) { (error, ref) in
@@ -520,14 +562,4 @@ extension VideoChatViewController: RTCPeerConnectionDelegate {
         LOG("didRemove")
     }
     
-}
-
-
-
-class DummyCapturerDelegate: NSObject, RTCVideoCapturerDelegate {
-    func capturer(_ capturer: RTCVideoCapturer, didCapture frame: RTCVideoFrame) {
-        print("\n\n did capture \n\n")
-    }
-    
-    // Implement any required delegate methods here
 }
