@@ -6,42 +6,52 @@
 //
 
 import UIKit
-import iOSDropDown
+import Firebase
 
 class InitialCallViewController: UIViewController {
 
-    var user : Int = 1
-    let dropDown = DropDown()
+    var user : Int = 0
     
-    @IBOutlet weak var userLabel: UILabel!
-    @IBOutlet weak var userTextField: DropDown!
-    @IBOutlet weak var noUserLabel: UILabel!
+    @IBOutlet weak var tomView: CustomViewShadow!
+    @IBOutlet weak var jerryView: CustomViewShadow!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        initializeScreen()
+        self.checkUserLoggedIn()
     }
     
-    @IBAction func connectButtonAction(_ sender: Any) {
-        if userLabel.text == "User"{
-            noUserLabel.isHidden = false
-            return
-        }
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "VideoChatViewController") as! VideoChatViewController
-        vc.user = user
-        self.navigationController?.pushViewController(vc, animated: true)
-        
-    }
-    
-    func initializeScreen(){
-        noUserLabel.isHidden = true
-        userTextField.optionArray = ["user1" , "user2"]
-        userTextField.didSelect { selectedText, index, id in
-            self.userLabel.text = "\(selectedText)"
-            self.user = index + 1
-            self.noUserLabel.isHidden = true
+    @IBAction func continueButtonAction(_ sender: Any) {
+        if user != 0{
+            UserDefaults.standard.set(user, forKey: "userId")
+            ToastManager.shared.showToast(message: "Logged In", backgroundColor: .green, backgroundOpacity: 0.2)
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "VideoCallHomeViewController") as! VideoCallHomeViewController
+            self.navigationController?.pushViewController(vc, animated: true)
+        }else{
+            ToastManager.shared.showToast(message: "Please select a user", backgroundColor: .red, backgroundOpacity: 0.2)
         }
     }
     
+    @IBAction func tomButtonAction(_ sender: Any) {
+        user = 1
+        setColor()
+    }
+    
+    
+    @IBAction func jerryButtonAction(_ sender: Any) {
+        user = 2
+        setColor()
+    }
+    
+    private func setColor(){
+        tomView.backgroundColor = user == 1 ? K_LIGHT_BLUE_COLOR : K_DARK_BLUE_COLOR
+        jerryView.backgroundColor = user == 2 ? K_LIGHT_BLUE_COLOR : K_DARK_BLUE_COLOR
+    }
+
+    private func checkUserLoggedIn() {
+        if UserDefaults.standard.value(forKey: "userId") is Int {
+            let homeVC = storyboard?.instantiateViewController(withIdentifier: "VideoCallHomeViewController") as! VideoCallHomeViewController
+            navigationController?.pushViewController(homeVC, animated: false)
+        }
+    }
 }

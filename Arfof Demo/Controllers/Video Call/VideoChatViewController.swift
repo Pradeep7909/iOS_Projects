@@ -10,6 +10,11 @@ import WebRTC
 import SwiftyJSON
 import Firebase
 
+protocol VideoChatViewControllerDelegate: AnyObject {
+    func videoCallCut()
+}
+
+
 class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     //MARK: Variables
@@ -22,18 +27,18 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     
     private var observerSignalRef: DatabaseReference?
     private var offerSignalRef: DatabaseReference?
-    
     private var isUsingFrontCamera = true
     
     private var sender: Int = 1
     private var receiver: Int = 2
     var user : Int = 2
+    var onVideoCallScreen : Bool = false
     
     private var screenWidth : CGFloat = 300
     private var screenHeight : CGFloat = 600
     private var safeAreaTopHeight : CGFloat = 40
-    private var callConnected : Bool = false
     private var isAudioMuted : Bool = false
+    static var delegate : VideoChatViewControllerDelegate?
     
     
     //MARK: IBOutlets
@@ -49,12 +54,15 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     @IBOutlet weak var callImageView: CustomView!
     @IBOutlet weak var muteButtonImage: UIImageView!
     @IBOutlet weak var videoButtonImage: UIImageView!
+    @IBOutlet weak var blurCameraPreview: UIVisualEffectView!
+    
     
     
     //MARK: View Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         LOG("viewDidLoad")
+        LOG("Will not work these screen in simulator")
         
         initializeView()
         self.remoteVideoView.delegate = self
@@ -66,25 +74,10 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     }
     
     //MARK: IBActions
-    @IBAction func closeButtonAction(_ sender: Any) {
-        hangUp()
-        self.navigationController?.popViewController(animated: true)
-    }
-    
+
     @IBAction func connectButtonAction(_ sender: Any) {
-        
-        if callConnected {
-            LOG("hangupButtonAction")
-            hangUp()
-        }else{
-            LOG("connectButtonAction")
-            if !callConnected {
-                LOG("make Offer")
-                makeOffer()
-            } else {
-                LOG("call already connected.")
-            }
-        }
+        LOG("hangupButtonAction")
+        hangUp()
     }
     
     
@@ -143,6 +136,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
                 videoTrack.isEnabled = !videoTrack.isEnabled
                 LOG("Video sharing \(videoTrack.isEnabled ? "resumed" : "paused")")
                 videoButtonImage.image = UIImage(named: videoTrack.isEnabled ? "videoOn" : "videoOff")
+                blurCameraPreview.isHidden = videoTrack.isEnabled ? true : false
             } else {
                 LOG("Error: No video track in the local stream.")
             }
@@ -154,6 +148,8 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     
     //MARK: Fucntions
     func initializeView(){
+        VideoCallHomeViewController.delegate = self
+        onVideoCallScreen = true
         sender =  user
         receiver =  user == 1 ? 2 : 1
         screenWidth = self.view.frame.width
@@ -161,7 +157,10 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
         safeAreaTopHeight = self.view.safeAreaInsets.top
         cameraPreview.backgroundColor = .clear
         remoteVideoView.backgroundColor = .clear
+        blurCameraPreview.isHidden = true
         self.view.backgroundColor = .black
+        self.callImage.image = UIImage(named: "callEnd")
+        self.callImageView.backgroundColor = .red
         setCameraPreviewFullScreen()
     }
     
@@ -172,10 +171,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
             self.cameraPreviewTralingConstraint.constant = 0
             self.cameraPreviewWidth.constant = self.screenWidth
             self.cameraPreviewHeight.constant = self.screenHeight
-            self.callImage.image = UIImage(named: "callRing")
-            self.callImageView.backgroundColor = .green
             self.remoteVideoView.isHidden = true
-            self.callConnected = false
             
             self.view.layoutIfNeeded()
         }
@@ -188,10 +184,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
                 self.cameraPreviewTralingConstraint.constant = 20
                 self.cameraPreviewWidth.constant = 100
                 self.cameraPreviewHeight.constant = 120
-                self.callImage.image = UIImage(named: "callEnd")
-                self.callImageView.backgroundColor = .red
                 self.remoteVideoView.isHidden = false
-                self.callConnected = true
                
                 self.view.layoutIfNeeded()
             }
@@ -242,7 +235,8 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
                 
             case "close":
                 LOG("peer is closed ...")
-                self?.hangUp()
+                
+//                self?.hangUp()
             default:
                 return
             }
@@ -264,7 +258,8 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
         // Start the capture session of the videoCapturer
         if let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: camera) {
             let format = RTCCameraVideoCapturer.supportedFormats(for: camera).first
-            let fps = format?.videoSupportedFrameRateRanges.first?.maxFrameRate ?? 30
+            let fps = format?.videoSupportedFrameRateRanges.first?.maxFrameRate ?? 60
+            print("Camera fps : \(fps)")
             
             videoCapturer!.startCapture(with: camera,
                                         format: format!,
@@ -390,7 +385,16 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     }
     
     func hangUp() {
-        if callConnected == true {
+        
+        LOG("CallHangUp fucntion called")
+        LOG("onVideoCallScreen : \(onVideoCallScreen)")
+        if onVideoCallScreen{
+            VideoChatViewController.delegate?.videoCallCut()
+            DispatchQueue.main.async{
+                LOG("poped after call cut")
+                self.onVideoCallScreen = false
+                self.navigationController?.popViewController(animated: false)
+            }
             if peerConnection.iceConnectionState != RTCIceConnectionState.closed {
                 peerConnection.close()
                 let jsonClose: JSON = ["type": "close"]
@@ -406,10 +410,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
                 remoteVideoTrack?.remove(remoteVideoView)
             }
             remoteVideoTrack = nil
-            callConnected = false
             LOG("Call is closed.")
-            setCameraPreviewFullScreen()
-            peerConnection = prepareNewConnection()
         }
     }
     
@@ -456,11 +457,14 @@ extension VideoChatViewController: RTCPeerConnectionDelegate {
         case RTCIceConnectionState.connected: state = "connected"
         case RTCIceConnectionState.closed:
             state = "closed"
-            hangUp()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1){
+                self.hangUp()
+            }
         case RTCIceConnectionState.failed:
             state = "failed"
             hangUp()
         case RTCIceConnectionState.disconnected: state = "disconnected"
+            hangUp()
         default: break
         }
         LOG("ICE connection Status has changed to \(state)")
@@ -504,5 +508,25 @@ extension VideoChatViewController: RTCPeerConnectionDelegate {
 
     func peerConnection(_ peerConnection: RTCPeerConnection, didRemove candidates: [RTCIceCandidate]) {
         LOG("didRemove")
+    }
+}
+
+extension VideoChatViewController : VideoCallHomeViewControllerDelegate{
+    func makeVideoCall() {
+       LOG("Making Video Call")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2 ) {
+            self.makeOffer()
+        }
+    }
+    
+    func removeVideoCallScreen() {
+        if onVideoCallScreen{
+            onVideoCallScreen =  false
+            self.navigationController?.popViewController(animated: false)
+        }
+    }
+    
+    func removeIncomingCallScreen() {
+        //no use of these delegate method here.
     }
 }

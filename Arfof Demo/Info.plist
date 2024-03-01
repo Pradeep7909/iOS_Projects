@@ -87,5 +87,9 @@
 	<string>We want Camera Access for call</string>
 	<key>NSLocalAuthenticationUsageDescription</key>
 	<string>We use Touch ID to secure your account.</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>We need it to capture screen</string>
+    <key>NSScreenCaptureUsageDescription</key>
+    <string>We need access to screen recording to enable screen sharing during video calls.</string>
 </dict>
 </plist>
