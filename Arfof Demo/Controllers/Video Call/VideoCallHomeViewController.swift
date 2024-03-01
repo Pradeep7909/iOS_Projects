@@ -102,6 +102,7 @@ class VideoCallHomeViewController: UIViewController {
             }else if callStatus == "callCut" {
                 self.callrequestSending =  false
                 VideoCallHomeViewController.delegate?.removeIncomingCallScreen()
+                VideoCallHomeViewController.delegate?.removeVideoCallScreen()
                 self.sendRequest(userID: "\(self.sender)", callStatus: "close")
             }
         }

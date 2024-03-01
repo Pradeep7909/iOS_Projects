@@ -71,6 +71,7 @@
 		AE54F4662B491BF600D22230 /* DataSharingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE54F4642B491BE700D22230 /* DataSharingManager.swift */; };
 		AE54F4682B49224400D22230 /* InAppMessageFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE54F4672B49224400D22230 /* InAppMessageFile.swift */; };
 		AE658AAE2B8E5FF500EC26EC /* ToastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE658AAD2B8E5FF500EC26EC /* ToastManager.swift */; };
+		AE7A360C2B91DA7700A0DD77 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7A360B2B91DA7700A0DD77 /* Extensions.swift */; };
 		AE99E69A2B6910A700689DE9 /* ImageUploadUsingPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE99E6992B6910A700689DE9 /* ImageUploadUsingPicker.swift */; };
 		AE9A95542B8E150500179B94 /* ScreenRecordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9A95532B8E150500179B94 /* ScreenRecordViewController.swift */; };
 		AE9A95562B8E43DE00179B94 /* SwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9A95552B8E43DE00179B94 /* SwiftUIView.swift */; };
@@ -248,6 +249,7 @@
 		AE54F4642B491BE700D22230 /* DataSharingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSharingManager.swift; sourceTree = "<group>"; };
 		AE54F4672B49224400D22230 /* InAppMessageFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppMessageFile.swift; sourceTree = "<group>"; };
 		AE658AAD2B8E5FF500EC26EC /* ToastManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastManager.swift; sourceTree = "<group>"; };
+		AE7A360B2B91DA7700A0DD77 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		AE8515B62B5A7C4800F4B65E /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		AE99E6992B6910A700689DE9 /* ImageUploadUsingPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploadUsingPicker.swift; sourceTree = "<group>"; };
 		AE9A95532B8E150500179B94 /* ScreenRecordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordViewController.swift; sourceTree = "<group>"; };
@@ -546,6 +548,7 @@
 				AEB8DE712B4E9155005439D4 /* ActivityIndicator.swift */,
 				AEB8DE732B4E91B7005439D4 /* Constants.swift */,
 				AE658AAD2B8E5FF500EC26EC /* ToastManager.swift */,
+				AE7A360B2B91DA7700A0DD77 /* Extensions.swift */,
 			);
 			path = "Helper Files";
 			sourceTree = "<group>";
@@ -1168,6 +1171,7 @@
 				AE9A95542B8E150500179B94 /* ScreenRecordViewController.swift in Sources */,
 				AEEC6A032B63ACB70082ED64 /* CalloutView.swift in Sources */,
 				AEB915B42B57939F00CA6EB7 /* CustomTableHeader.swift in Sources */,
+				AE7A360C2B91DA7700A0DD77 /* Extensions.swift in Sources */,
 				94A6F0FF2B18A87600FA11D8 /* MyOrdersViewController.swift in Sources */,
 				AEB21F0C2B88BFE900947659 /* ChipotleOnBoardingSecondBelowViewController.swift in Sources */,
 				94EC53EF2B0E252B00D8ED7E /* SignUpViewController.swift in Sources */,

@@ -49,7 +49,7 @@ class CallIncomingViewController: UIViewController{
         CallIncomingViewController.delegate?.declineCall()
     }
     
-    func initializeView(){
+    private func initializeView(){
         onInComingCallScreen  = true
         VideoCallHomeViewController.delegate = self
         reciverImage.image = UIImage(named: userId == 1 ? "jerry" : "tom")

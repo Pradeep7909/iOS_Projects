@@ -28,10 +28,12 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     private var observerSignalRef: DatabaseReference?
     private var offerSignalRef: DatabaseReference?
     private var isUsingFrontCamera = true
+    private var audioSession = AVAudioSession.sharedInstance()
+    private var isSpeakerEnabled = false
     
     private var sender: Int = 1
     private var receiver: Int = 2
-    var user : Int = 2
+    var user : Int = 0
     var onVideoCallScreen : Bool = false
     
     private var screenWidth : CGFloat = 300
@@ -55,22 +57,19 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     @IBOutlet weak var muteButtonImage: UIImageView!
     @IBOutlet weak var videoButtonImage: UIImageView!
     @IBOutlet weak var blurCameraPreview: UIVisualEffectView!
+    @IBOutlet weak var speakerImage: UIImageView!
+    @IBOutlet weak var callingLabel: UILabel!
     
     
     
     //MARK: View Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        LOG("viewDidLoad")
-        LOG("Will not work these screen in simulator")
+        LOG("ViewCall ViewDidLoad")
+
         
         initializeView()
-        self.remoteVideoView.delegate = self
         
-        self.peerConnectionFactory = RTCPeerConnectionFactory()
-        self.startVideo(camera: .front)
-        self.setupFirebase()
-        peerConnection = prepareNewConnection()
     }
     
     //MARK: IBActions
@@ -125,7 +124,6 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
             }
         } else {
             LOG("Error: No local stream found or no audio tracks in the local stream.")
-            
         }
     }
     
@@ -146,6 +144,25 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     }
     
     
+    @IBAction func speakerToggleAction(_ sender: Any) {
+        
+        do {
+            let session = RTCAudioSession.sharedInstance()
+            session.lockForConfiguration()
+            if isSpeakerEnabled {
+                try session.setCategory(AVAudioSession.Category.playAndRecord.rawValue)
+            } else {
+                try session.setCategory(AVAudioSession.Category.playAndRecord.rawValue, with: .defaultToSpeaker)
+            }
+            session.unlockForConfiguration()
+            isSpeakerEnabled = !isSpeakerEnabled
+            speakerImage.image = UIImage(named: isSpeakerEnabled ? "speakerOn" : "speakerOff")
+            LOG("Speaker : \(isSpeakerEnabled)")
+        } catch {
+            LOG("Error toggling speaker: \(error.localizedDescription)")
+        }
+    }
+    
     //MARK: Fucntions
     func initializeView(){
         VideoCallHomeViewController.delegate = self
@@ -158,10 +175,26 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
         cameraPreview.backgroundColor = .clear
         remoteVideoView.backgroundColor = .clear
         blurCameraPreview.isHidden = true
-        self.view.backgroundColor = .black
         self.callImage.image = UIImage(named: "callEnd")
         self.callImageView.backgroundColor = .red
+        callingLabel.addStroke(color: .darkGray, width: 2)
         setCameraPreviewFullScreen()
+        callingLabel.text = user ==  2 ? "Connecting..." : "Calling..."
+        
+        //firebase & WebRTC setup
+#if targetEnvironment(simulator)
+        LOG("VideoCall cannot run on simulator")
+        return
+#endif
+        initialSetup()
+    }
+    
+    func initialSetup(){
+        self.remoteVideoView.delegate = self
+        self.peerConnectionFactory = RTCPeerConnectionFactory()
+        self.startVideo(camera: .front)
+        self.setupFirebase()
+        peerConnection = prepareNewConnection()
     }
     
     //When call is not connected
@@ -185,6 +218,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
                 self.cameraPreviewWidth.constant = 100
                 self.cameraPreviewHeight.constant = 120
                 self.remoteVideoView.isHidden = false
+                self.callingLabel.isHidden = true
                
                 self.view.layoutIfNeeded()
             }
@@ -257,9 +291,8 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
 
         // Start the capture session of the videoCapturer
         if let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: camera) {
-            let format = RTCCameraVideoCapturer.supportedFormats(for: camera).first
-            let fps = format?.videoSupportedFrameRateRanges.first?.maxFrameRate ?? 60
-            print("Camera fps : \(fps)")
+            let format = RTCCameraVideoCapturer.supportedFormats(for: camera).last
+            let fps = 60
             
             videoCapturer!.startCapture(with: camera,
                                         format: format!,
@@ -511,9 +544,12 @@ extension VideoChatViewController: RTCPeerConnectionDelegate {
     }
 }
 
+
+//MARK: Home sc
 extension VideoChatViewController : VideoCallHomeViewControllerDelegate{
     func makeVideoCall() {
        LOG("Making Video Call")
+        callingLabel.text = "Connecting..."
         DispatchQueue.main.asyncAfter(deadline: .now() + 2 ) {
             self.makeOffer()
         }
