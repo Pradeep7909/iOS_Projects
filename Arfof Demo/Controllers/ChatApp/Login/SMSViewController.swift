@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAnalytics
 
 class SMSViewController: UIViewController , UITextFieldDelegate {
     
@@ -46,6 +47,7 @@ class SMSViewController: UIViewController , UITextFieldDelegate {
                     let controller = self?.storyboard?.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
                     controller.accountHeaderLabel = "Logged in using Phone Number"
                     self?.navigationController?.pushViewController(controller, animated: true)
+                    Analytics.logEvent("user_login", parameters: nil)
                     print("Navigated to Main Account Screen")
                 }
             }

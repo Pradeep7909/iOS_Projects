@@ -15,12 +15,16 @@ class InitialCallViewController: UIViewController {
     @IBOutlet weak var tomView: CustomViewShadow!
     @IBOutlet weak var jerryView: CustomViewShadow!
     
-    
+    //MARK: ViewCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.checkUserLoggedIn()
     }
+    override func viewDidAppear(_ animated: Bool) {
+        LOG("\(type(of: self)) viewDidAppear")
+    }
     
+    //MARK: IBAction
     @IBAction func continueButtonAction(_ sender: Any) {
         if user != 0{
             UserDefaults.standard.set(user, forKey: "userId")
@@ -43,6 +47,7 @@ class InitialCallViewController: UIViewController {
         setColor()
     }
     
+    //MARK: Functions
     private func setColor(){
         tomView.backgroundColor = user == 1 ? K_LIGHT_BLUE_COLOR : K_DARK_BLUE_COLOR
         jerryView.backgroundColor = user == 2 ? K_LIGHT_BLUE_COLOR : K_DARK_BLUE_COLOR

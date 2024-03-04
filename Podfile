@@ -17,6 +17,7 @@ target 'Arfof Demo' do
   pod 'Firebase/Crashlytics'
   pod 'FirebaseInAppMessaging', '~> 10.19.0-beta'
   pod 'Firebase/Firestore'
+  pod 'Firebase/Analytics'
 #  pod 'GoogleSignIn'
   
   pod 'FBSDKCoreKit'

@@ -102,6 +102,7 @@
 		AEB21F262B88C3B000947659 /* ChipotleMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB21F252B88C3B000947659 /* ChipotleMapViewController.swift */; };
 		AEB21F282B88C54400947659 /* TestStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEB21F272B88C54400947659 /* TestStoryboard.storyboard */; };
 		AEB21F2A2B88C76600947659 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEB21F292B88C76600947659 /* LocalAuthentication.framework */; };
+		AEB85CE12B932F54007C7A13 /* QRScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB85CE02B932F54007C7A13 /* QRScannerViewController.swift */; };
 		AEB8DE702B4E5E67005439D4 /* AllUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB8DE6F2B4E5E67005439D4 /* AllUsersViewController.swift */; };
 		AEB8DE722B4E9155005439D4 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB8DE712B4E9155005439D4 /* ActivityIndicator.swift */; };
 		AEB8DE742B4E91B7005439D4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB8DE732B4E91B7005439D4 /* Constants.swift */; };
@@ -281,6 +282,7 @@
 		AEB21F272B88C54400947659 /* TestStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TestStoryboard.storyboard; sourceTree = "<group>"; };
 		AEB21F292B88C76600947659 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		AEB654582B6229690098EF6B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		AEB85CE02B932F54007C7A13 /* QRScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerViewController.swift; sourceTree = "<group>"; };
 		AEB8DE6F2B4E5E67005439D4 /* AllUsersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllUsersViewController.swift; sourceTree = "<group>"; };
 		AEB8DE712B4E9155005439D4 /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		AEB8DE732B4E91B7005439D4 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -697,6 +699,7 @@
 			children = (
 				AE9A95532B8E150500179B94 /* ScreenRecordViewController.swift */,
 				AE9A95552B8E43DE00179B94 /* SwiftUIView.swift */,
+				AEB85CE02B932F54007C7A13 /* QRScannerViewController.swift */,
 			);
 			path = Practice;
 			sourceTree = "<group>";
@@ -1196,6 +1199,7 @@
 				AEB21F232B88C22D00947659 /* ChipotleRewardViewController.swift in Sources */,
 				AEA850A72B67B2AA007C9393 /* AtmViewController.swift in Sources */,
 				AEB21F1B2B88C1F000947659 /* BottomTabViewController.swift in Sources */,
+				AEB85CE12B932F54007C7A13 /* QRScannerViewController.swift in Sources */,
 				94FADA202B30791800EB8945 /* DashBoardViewController.swift in Sources */,
 				AEB21F192B88C1D200947659 /* ChipotleFeaturedViewController.swift in Sources */,
 				AEB21F062B88BF7F00947659 /* ChipotleOnBoardingThirdViewController.swift in Sources */,
@@ -1423,7 +1427,7 @@
 				DEVELOPMENT_TEAM = V6W7VB43FV;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Arfof Demo/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = ArfofDemo;
+				INFOPLIST_KEY_CFBundleDisplayName = "iOS App";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need your location for Map";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location for Map";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -1457,7 +1461,7 @@
 				DEVELOPMENT_TEAM = V6W7VB43FV;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Arfof Demo/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = ArfofDemo;
+				INFOPLIST_KEY_CFBundleDisplayName = "iOS App";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need your location for Map";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location for Map";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

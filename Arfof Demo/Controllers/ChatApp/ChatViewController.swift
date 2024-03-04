@@ -9,6 +9,7 @@ import UIKit
 import NotificationCenter
 import SDWebImage
 import Firebase
+import FirebaseAnalytics
 
 protocol ChatCellDelegate: AnyObject {
     func didTapImage(_ image: UIImage)
@@ -53,6 +54,10 @@ class ChatViewController: UIViewController , UIScrollViewDelegate{
     }
     override func viewWillAppear(_ animated: Bool) {
         print("viewWillAppear")
+        Analytics.logEvent(AnalyticsEventScreenView, parameters: [
+                AnalyticsParameterScreenName: "ChatScreen",
+                AnalyticsParameterScreenClass: NSStringFromClass(self.classForCoder)
+            ])
     }
     
     override func viewWillDisappear(_ animated: Bool) {

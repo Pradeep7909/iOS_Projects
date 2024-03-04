@@ -8,6 +8,7 @@
 import UIKit
 import Firebase
 
+//protocol for notifying incoming call screen , and videochat screen
 protocol VideoCallHomeViewControllerDelegate: AnyObject {
     func removeIncomingCallScreen()
     func removeVideoCallScreen()
@@ -16,6 +17,7 @@ protocol VideoCallHomeViewControllerDelegate: AnyObject {
 
 class VideoCallHomeViewController: UIViewController {
     
+    //MARK: Variables
     let userId = UserDefaults.standard.value(forKey: "userId") as? Int
     private var sender: Int = 1
     private var receiver: Int = 2
@@ -35,7 +37,11 @@ class VideoCallHomeViewController: UIViewController {
         
         initializeView()
     }
+    override func viewDidAppear(_ animated: Bool) {
+        LOG("\(type(of: self)) viewDidAppear")
+    }
     
+    //MARK: IBActions
     @IBAction func logoutButtonAction(_ sender: Any) {
         let alert = UIAlertController(title: "Logout", message: "Are you sure you want to log out?", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -55,6 +61,7 @@ class VideoCallHomeViewController: UIViewController {
         self.navigationController?.pushViewController(vc, animated: false)
     }
     
+    //MARK: Fucntions
     private func initializeView(){
         sender =  userId!
         receiver =  userId == 1 ? 2 : 1
@@ -113,9 +120,9 @@ class VideoCallHomeViewController: UIViewController {
         let message = ["userID": userID, "callStatus": callStatus] as [String : Any]
         self.requestSignalRef?.setValue(message) { (error, ref) in
             if let error = error {
-                print("Error sending request: \(error.localizedDescription)")
+                LOG("Error sending request: \(error.localizedDescription)")
             } else {
-                print("Request sent successfully as :  \(callStatus) by : \(userID)")
+                LOG("Request sent successfully as :  \(callStatus) by : \(userID)")
                 if callStatus == "request" {
                     self.callrequestSending = true
                     if let timer = self.requestTimer {
@@ -150,7 +157,7 @@ class VideoCallHomeViewController: UIViewController {
     }
 }
 
-
+//MARK: Delegates
 extension VideoCallHomeViewController : CallIncomingViewControllerDelegate{
     func declineCall() {
         LOG("Call Decline")

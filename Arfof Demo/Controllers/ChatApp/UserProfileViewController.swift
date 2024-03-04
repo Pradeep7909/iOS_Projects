@@ -9,6 +9,7 @@ import UIKit
 import Firebase
 import PhotosUI
 import SDWebImage
+import FirebaseAnalytics
 
 class UserProfileViewController: UIViewController, UITextFieldDelegate {
     
@@ -72,6 +73,20 @@ class UserProfileViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func backButtonAction(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
+    }
+    
+    
+    @IBAction func logoutButton(_ sender: Any) {
+        do {
+            try Auth.auth().signOut()
+            Analytics.logEvent("user_logout", parameters: nil)
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "PhoneViewController") as! PhoneViewController
+            self.navigationController?.pushViewController(vc, animated: false)
+            
+        } catch let error as NSError {
+            print("Error signing out: \(error.localizedDescription)")
+            
+        }
     }
     
     

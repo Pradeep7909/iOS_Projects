@@ -7,6 +7,7 @@
 
 import UIKit
 
+//protocl for notifiy about response
 protocol CallIncomingViewControllerDelegate: AnyObject {
     func declineCall()
     func acceptCall()
@@ -23,6 +24,7 @@ class CallIncomingViewController: UIViewController{
     @IBOutlet weak var reciverImage: UIImageView!
     @IBOutlet weak var receiverUserName: UILabel!
     
+    //MARK: ViewCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         initializeView()
@@ -33,8 +35,11 @@ class CallIncomingViewController: UIViewController{
             self.navigationController?.popViewController(animated: false)
         }
     }
+    override func viewDidAppear(_ animated: Bool) {
+        LOG("\(type(of: self)) viewDidAppear")
+    }
     
-    
+    //MARK: IBAction
     @IBAction func acceptCallButton(_ sender: Any) {
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "VideoChatViewController") as! VideoChatViewController
         vc.user = 2
@@ -49,6 +54,7 @@ class CallIncomingViewController: UIViewController{
         CallIncomingViewController.delegate?.declineCall()
     }
     
+    //MARK: Fucntions
     private func initializeView(){
         onInComingCallScreen  = true
         VideoCallHomeViewController.delegate = self
@@ -58,6 +64,7 @@ class CallIncomingViewController: UIViewController{
     
 }
 
+//MARK: Delegate Method
 extension CallIncomingViewController : VideoCallHomeViewControllerDelegate{
     func makeVideoCall() {
         // no use of call method here.

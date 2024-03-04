@@ -62,8 +62,31 @@ class AllUsersViewController: UIViewController {
             }
             // Reload the table view data after fetching users
             self.usersTableView.reloadData()
+            
+            self.animateTable()
         }
     }
+    
+    func animateTable() {
+        usersTableView.reloadData()
+        
+        let cells = usersTableView.visibleCells
+        let tableWidth = usersTableView.bounds.size.width
+        
+        // move all cells to the bottom of the screen
+        for cell in cells {
+          cell.transform = CGAffineTransform(translationX: tableWidth, y: 0)
+        }
+        
+        // move all cells from right to the left place
+        var index = 0
+        for cell in cells {
+          UIView.animate(withDuration: 2, delay: 0.1 * Double(index), usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: [], animations: {
+            cell.transform = CGAffineTransform(translationX: 0, y: 0)
+            }, completion: nil)
+          index += 1
+        }
+      }
 }
 
 //MARK: Table Extension

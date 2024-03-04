@@ -18,19 +18,6 @@ protocol VideoChatViewControllerDelegate: AnyObject {
 class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     //MARK: Variables
-    private var peerConnectionFactory: RTCPeerConnectionFactory! = nil
-    private var peerConnection: RTCPeerConnection! = nil
-    private var remoteVideoTrack: RTCVideoTrack?
-    private var audioSource: RTCAudioSource?
-    private var videoSource: RTCVideoSource?
-    private var videoCapturer: RTCCameraVideoCapturer?
-    
-    private var observerSignalRef: DatabaseReference?
-    private var offerSignalRef: DatabaseReference?
-    private var isUsingFrontCamera = true
-    private var audioSession = AVAudioSession.sharedInstance()
-    private var isSpeakerEnabled = false
-    
     private var sender: Int = 1
     private var receiver: Int = 2
     var user : Int = 0
@@ -40,8 +27,21 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
     private var screenHeight : CGFloat = 600
     private var safeAreaTopHeight : CGFloat = 40
     private var isAudioMuted : Bool = false
+    private var isSpeakerEnabled = false
+    private var isUsingFrontCamera = true
+    private var audioSession = AVAudioSession.sharedInstance()
+    
     static var delegate : VideoChatViewControllerDelegate?
     
+    
+    private var peerConnectionFactory: RTCPeerConnectionFactory! = nil
+    private var peerConnection: RTCPeerConnection! = nil
+    private var remoteVideoTrack: RTCVideoTrack?
+    private var audioSource: RTCAudioSource?
+    private var videoSource: RTCVideoSource?
+    private var videoCapturer: RTCCameraVideoCapturer?
+    private var observerSignalRef: DatabaseReference?
+    private var offerSignalRef: DatabaseReference?
     
     //MARK: IBOutlets
     @IBOutlet weak var cameraPreview: RTCCameraPreviewView!
@@ -67,10 +67,32 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
         super.viewDidLoad()
         LOG("ViewCall ViewDidLoad")
 
-        
         initializeView()
         
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        LOG("\(type(of: self)) viewDidAppear")
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        if peerConnection != nil  && peerConnection.iceConnectionState != RTCIceConnectionState.closed {
+            peerConnection.close()
+            let jsonClose: JSON = ["type": "close"]
+            
+            let message = jsonClose.dictionaryObject
+            LOG("sending close message")
+            let ref = Database.database().reference().child("Call/\(sender)")
+            ref.setValue(message) { (error, ref) in
+                LOG("Dang send SDP Error -->>  \( error.debugDescription) ")
+            }
+        }
+        if remoteVideoTrack != nil {
+            remoteVideoTrack?.remove(remoteVideoView)
+        }
+        remoteVideoTrack = nil
+    }
+    
     
     //MARK: IBActions
 
@@ -98,14 +120,12 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
             videoCapturer?.captureSession.beginConfiguration()
             videoCapturer?.captureSession.removeInput(activeDevice)
             
-            // Add the new input to the capture session
             if videoCapturer?.captureSession.canAddInput(newInput) == true {
                 videoCapturer?.captureSession.addInput(newInput)
             } else {
                 LOG("Failed to add new input to capture session.")
             }
             
-            // Commit the configuration session
             videoCapturer?.captureSession.commitConfiguration()
         } catch {
             LOG("Error creating capture device input: \(error.localizedDescription)")
@@ -184,6 +204,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
         //firebase & WebRTC setup
 #if targetEnvironment(simulator)
         LOG("VideoCall cannot run on simulator")
+        callingLabel.text = "Camera Not available"
         return
 #endif
         initialSetup()
@@ -428,7 +449,7 @@ class VideoChatViewController: UIViewController, RTCVideoViewDelegate, AVCapture
                 self.onVideoCallScreen = false
                 self.navigationController?.popViewController(animated: false)
             }
-            if peerConnection.iceConnectionState != RTCIceConnectionState.closed {
+            if peerConnection != nil && peerConnection.iceConnectionState != RTCIceConnectionState.closed {
                 peerConnection.close()
                 let jsonClose: JSON = ["type": "close"]
                 
@@ -545,7 +566,7 @@ extension VideoChatViewController: RTCPeerConnectionDelegate {
 }
 
 
-//MARK: Home sc
+//MARK: Delegate Methods
 extension VideoChatViewController : VideoCallHomeViewControllerDelegate{
     func makeVideoCall() {
        LOG("Making Video Call")
