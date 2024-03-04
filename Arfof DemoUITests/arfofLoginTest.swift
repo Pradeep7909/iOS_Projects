@@ -1,6 +1,6 @@
 //
 //  arfofLoginTest.swift
-//  Arfof DemoUITests
+//  iOS AppUITests
 //
 //  Created by Guest on 12/27/23.
 //

@@ -1,6 +1,0 @@
-framework module Pods_Arfof_Demo_Arfof_DemoUITests {
-  umbrella header "Pods-Arfof Demo-Arfof DemoUITests-umbrella.h"
-
-  export *
-  module * { export * }
-}

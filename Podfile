@@ -1,11 +1,11 @@
 # Uncomment the next line to define a global platform for your project
 platform :ios, '13.0'
 
-target 'Arfof Demo' do
+target 'iOS App' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
   
-  # Pods for Arfof Demo
+  # Pods for iOS App
   pod 'Hero'
   pod 'DGCharts'
   
@@ -31,11 +31,11 @@ target 'Arfof Demo' do
 
   
   
-  target 'Arfof DemoTests' do
+  target 'iOS AppTests' do
     # Pods for testing
   end
   
-  target 'Arfof DemoUITests' do
+  target 'iOS AppUITests' do
     # Pods for testing
   end
   

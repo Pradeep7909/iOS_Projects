@@ -1,6 +1,0 @@
-framework module Pods_Arfof_Demo_NotificationService {
-  umbrella header "Pods-Arfof Demo-NotificationService-umbrella.h"
-
-  export *
-  module * { export * }
-}

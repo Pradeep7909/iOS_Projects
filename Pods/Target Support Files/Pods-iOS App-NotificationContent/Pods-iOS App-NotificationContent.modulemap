@@ -1,0 +1,6 @@
+framework module Pods_iOS_App_NotificationContent {
+  umbrella header "Pods-iOS App-NotificationContent-umbrella.h"
+
+  export *
+  module * { export * }
+}

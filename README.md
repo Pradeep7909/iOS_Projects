@@ -1,4 +1,4 @@
-#  Arfof Demo
+#  iOS App
 A sample project on Ecommerce Application with Authentication, Realtime chat and Map.
 
 
@@ -74,10 +74,10 @@ These application consists of:
 ```
 platform :ios, '13.0'
 
-target 'Arfof Demo' do
+target 'iOS App' do
   use_frameworks!
   
-  # Pods for Arfof Demo
+  # Pods for iOS App
   pod 'Hero'
   pod 'DGCharts'
   pod 'Firebase/Auth'
