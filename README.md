@@ -18,6 +18,7 @@ These application consists of:
   * Real-time chat functionality powered by Firebase Realtime Database.
   * Integration of MapKit for mapping features.
   * Custom UI for notifications using NotificationService and NotificationContent.
+  * Video calling using webRTC and firebase Real Time Database for connection.
   * UI Test and Unit Test for testing my project.
   
 
@@ -48,6 +49,9 @@ These application consists of:
 - **Orders Screen:** Displays order history and status.
 - **Dashboard Screen:** Presents a graph related to orders and sales'
 '.
+
+### Video/Audio Calling
+- **Web RTC:** Utilizes WebRTC for video calling.
 
 ### DGCharts Integration
 - **Line Chart and Bar Chart:** Utilizes DGCharts to visualize data in the dashboard screen.
